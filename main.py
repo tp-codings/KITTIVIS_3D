@@ -8,10 +8,11 @@ from src.PointCloudController import PointCloudController
 from src.CamController import CamController
 from src.InputController import InputController
 from src.TextController import TextController
-
+from src.GeoController import GeoController
+from src.BoundingBoxController import BoundingBoxController
 
 def init():
-    global inputController, pointCloudController, camController, textController, stop, clock
+    global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, stop, clock
     display = (800, 1000)
     stop = False
     clock = pygame.time.Clock()
@@ -24,29 +25,34 @@ def init():
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     gluPerspective(45, (800 / 600), 0.1, 10000.0)
     glTranslatef(0.0, 0.0, -70)
+
+    geoController = GeoController()
     pointCloudController = PointCloudController()
-    camController = CamController()
+    camController = CamController(display)
     inputController = InputController()
     textController = TextController()
+    boundingBoxController = BoundingBoxController()
 
 def update():
     global stop
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()
-    #camController.update(next_frame)
+    camController.update()
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
+    boundingBoxController.update(initial_mouse_pos, zoom_factor, dragging)
+    latitude, longitude, height, location, speed_limit = geoController.update()
     fps = clock.get_fps()
-    textController.update(fps, 49.0, 6.0, 300)
+    textController.update(fps, latitude, longitude, height, location, speed_limit)
 
 
 def render():
-    clock.tick(20)  
+    clock.tick(30)  
+    projection = glGetFloatv(GL_PROJECTION_MATRIX)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glClearColor(0.0, 0.0, 0.0, 1.0)
-    #inputController.render()
-    #camController.render()
-    pointCloudController.render()
     textController.render()
-
+    pointCloudController.render(projection)
+    boundingBoxController.render()
+    camController.render()
     pygame.display.flip()
 
 
