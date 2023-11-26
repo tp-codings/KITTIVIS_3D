@@ -62,6 +62,7 @@ class BoundingBoxController:
         glScalef(scale, scale, scale)
         glTranslatef(0.0, 0.0, -70 * self.zoom_factor)
         self.rotate_scene(*self.rotation_angles)
+        glPushAttrib(GL_CURRENT_BIT)
 
         for connection in connections:
             glBegin(GL_LINES)
@@ -69,5 +70,7 @@ class BoundingBoxController:
             for vertex in connection:
                 glVertex3fv(vertices[:, vertex])
             glEnd()
+        glPopAttrib()
+
 
         glPopMatrix()
