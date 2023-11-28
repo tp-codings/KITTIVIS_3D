@@ -13,7 +13,7 @@ from src.BoundingBoxController import BoundingBoxController
 
 def init():
     global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, stop, clock
-    display = (800, 1000)
+    display = (800, 800)
     stop = False
     clock = pygame.time.Clock()
     pygame.init()

@@ -4,75 +4,124 @@ from utils.utilities import incrementString
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+from ultralytics import YOLO
+
 
 class CamController:
 
     def __init__(self, display):
-        self.cam00_path = os.path.join("data", "Live", "image_00", "data")
-        self.cam01_path = os.path.join("data", "Live", "image_01", "data")
-        self.cam02_path = os.path.join("data", "Live", "image_02", "data")
-        self.cam03_path = os.path.join("data", "Live", "image_03", "data")
+        self.base_path = os.path.join("data", "Live")
+        self.cam_paths = [os.path.join(self.base_path, f"image_{i:02d}", "data") for i in range(3, 4)]
 
         self.current_frame = "0000000000"
 
-        self.cams = [None, None, None, None]
+        self.cams = [None]
+        self.texture_ids = [None]
 
-        self.positions = [(-800, display[1]/2+100), (200, display[1]/2+100), (-800, display[1]/2-100), (200, display[1]/2-100)]
-    
+        self.positions = [(100, display[1] / 2)]
+
+        self.model = YOLO("YoloWeights/yolov8n.pt")
+        self.classNames = self.model.names
+
+        self.detections = []
+
     def get_data(self):
-        file_path = os.path.join(self.cam00_path, self.current_frame + ".png")
-        self.cams[0] = pygame.image.load(file_path).convert()
-
-        file_path = os.path.join(self.cam01_path, self.current_frame + ".png")
-        self.cams[1] = pygame.image.load(file_path).convert()
-
-        file_path = os.path.join(self.cam02_path, self.current_frame + ".png")
-        self.cams[2]= pygame.image.load(file_path).convert()
-
-        file_path = os.path.join(self.cam03_path, self.current_frame + ".png")
-        self.cams[3] = pygame.image.load(file_path).convert()
+        for i, cam_path in enumerate(self.cam_paths):
+            file_path = os.path.join(cam_path, f"{self.current_frame}.png")
+            self.cams[i] = pygame.image.load(file_path).convert()
 
         next_frame = incrementString(self.current_frame)
-        file_path0 = os.path.join(self.cam00_path, next_frame + ".png")
-        file_path1 = os.path.join(self.cam01_path, next_frame + ".png")
-        file_path2 = os.path.join(self.cam02_path, next_frame + ".png")
-        file_path3 = os.path.join(self.cam03_path, next_frame + ".png")
-        if os.path.exists(file_path0) and os.path.exists(file_path1) and os.path.exists(file_path2) and os.path.exists(file_path3):
+        if all(os.path.exists(os.path.join(cam_path, f"{next_frame}.png")) for cam_path in self.cam_paths):
             self.current_frame = next_frame
+
+    def load_texture(self, cam_index):
+        cam = self.cams[cam_index]
+        width, height = cam.get_width(), cam.get_height()
+        texture_data = pygame.image.tostring(cam, "RGBA", True)
+
+        if self.texture_ids[cam_index] is None:
+            self.texture_ids[cam_index] = glGenTextures(1)
+
+        glBindTexture(GL_TEXTURE_2D, self.texture_ids[cam_index])
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+
+    def perform_yolo_detection(self, cam_index):
+        imgdata = pygame.surfarray.array3d(self.cams[cam_index])
+        imgdata = imgdata.swapaxes(0, 1)
+        results = self.model(imgdata, stream=True)
+        temp_detect = []
+        for r in results:
+            boxes = r.boxes
+            for box in boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])
+                temp_detect.append((x1, y1, x2, y2))
+        self.detections = temp_detect
 
     def update(self):
         self.get_data()
+        self.perform_yolo_detection(0)
+        for i in range(len(self.cams)):
+            self.load_texture(i)
 
-    def render(self, scale = 0.5, detections = None):
+    def render(self, scale=0.5):
+        glPushAttrib(GL_CURRENT_BIT)
+        glColor3f(1.0, 0.0, 0.0)
+        glBegin(GL_LINES)
+
+        for rect in self.detections:
+            scaled_rect = [value * scale for value in rect]
+            x1, y1, x2, y2 = scaled_rect
+
+            x, y = self.positions[0]
+            x = x / 20
+            y = y / 20
+            shift_vector = (x, y)
+
+            glVertex2f((x1 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
+            glVertex2f((x2 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
+
+            glVertex2f((x2 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
+            glVertex2f((x2 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
+
+            glVertex2f((x2 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
+            glVertex2f((x1 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
+
+            glVertex2f((x1 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
+            glVertex2f((x1 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
+        glEnd()
+        glPopAttrib()
+
         for i, position in enumerate(self.positions):
-            x = position[0]
-            y = position[1]
+            x, y = position
+
             width, height = self.cams[i].get_width(), self.cams[i].get_height()
-            texture_data = pygame.image.tostring(self.cams[i], "RGBA", True)
 
             glEnable(GL_TEXTURE_2D)
-            texture_id = glGenTextures(1)
-            glBindTexture(GL_TEXTURE_2D, texture_id)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+            glBindTexture(GL_TEXTURE_2D, self.texture_ids[i])
 
-            tl = (x/20, y/20)
-            tr = (x/20 + width*scale/20, y/20)
+            tr = (x / 20 + width * scale / 20, y / 20 + height * scale / 20)
+            tl = (x / 20, y / 20 + height * scale / 20)
 
-            br = (x/20 + width*scale/20, y/20 - height*scale/20)
-            bl = (x/20, y/20 - height*scale/20)
+            bl = (x / 20, y / 20)
+            br = (x / 20 + width * scale / 20, y / 20)
+
 
             glBegin(GL_QUADS)
-            glTexCoord2f(0, 1)
-            glVertex2f(tl[0], tl[1])  # Oben links
-            glTexCoord2f(1, 1)
-            glVertex2f(tr[0], tr[1])  # Oben rechts
-            glTexCoord2f(1, 0)
-            glVertex2f(br[0], br[1])  # Unten rechts
-            glTexCoord2f(0, 0)
-            glVertex2f(bl[0], bl[1])  # Unten links
+            glTexCoord2f(1, 0)  # Unten links
+            glVertex2f(br[0], br[1])
+
+            glTexCoord2f(0, 0)  # Unten rechts
+            glVertex2f(bl[0], bl[1])
+
+            glTexCoord2f(0, 1)  # Oben rechts
+            glVertex2f(tl[0], tl[1])
+
+            glTexCoord2f(1, 1)  # Oben links
+            glVertex2f(tr[0], tr[1])
             glEnd()
 
-            glDeleteTextures([texture_id])
             glDisable(GL_TEXTURE_2D)
+
+            glDeleteTextures([self.texture_ids[i]])
