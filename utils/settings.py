@@ -1,10 +1,10 @@
 colors = {
-    'Car': (0.0, 0.0, 1.0),  # Blau
-    'Tram': (1.0, 0.0, 0.0),  # Rot
-    'Cyclist': (0.0, 1.0, 0.0),  # Grün
-    'Van': (0.0, 1.0, 1.0),  # Cyan
-    'Truck': (1.0, 0.0, 1.0),  # Magenta
-    'Pedestrian': (1.0, 1.0, 0.0),  # Gelb
-    'Sitter': (0.0, 0.0, 0.0),  # Schwarz
-    'Misc' : (0.0, 0.4, 1.0)
+    'car': (0.0, 0.0, 1.0),  # Blau
+    'tram': (1.0, 0.0, 0.0),  # Rot
+    'cyclist': (0.0, 1.0, 0.0),  # Grün
+    'van': (0.0, 1.0, 1.0),  # Cyan
+    'truck': (1.0, 0.0, 1.0),  # Magenta
+    'pedestrian': (1.0, 1.0, 0.0),  # Gelb
+    'sitter': (0.0, 0.0, 0.0),  # Schwarz
+    'misc' : (0.0, 0.4, 1.0)
 }

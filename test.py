@@ -1,37 +1,37 @@
-import re
+import pygame
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
 
-def parse_quader_data(file_path):
-    with open(file_path, 'r') as file:
-        quader_data = file.readlines()
+# Definiere die Punkte A und B
+point_A = (-1, -1, -1)
+point_B = (1, 1, 1)
 
-    types_list = []
-    coordinates_list = []
+def draw_line():
+    glBegin(GL_LINES)
+    glVertex3fv(point_A)
+    glVertex3fv(point_B)
+    glEnd()
 
-    for line in quader_data:
-        data = line.split()
-        if len(data) < 24:
-            continue  # Skip lines with incomplete data
+def main():
+    pygame.init()
+    display = (800, 600)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+    glTranslatef(0.0, 0.0, -5)
 
-        quader_type = data[0]
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
 
-        types_list.append(quader_type)
-        coordinates_list.append([
-            [float(x) for x in data[1:9]],
-            [float(x) for x in data[9:17]],
-            [float(x) for x in data[17:25]]
-        ])
+        glRotatef(1, 3, 1, 1)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        draw_line()
+        pygame.display.flip()
+        pygame.time.wait(10)
 
-    return types_list, coordinates_list
-
-# Beispielaufruf:
-file_path = 'data/Live/tracklets/0000000000.txt'
-types_list, coordinates_list = parse_quader_data(file_path)
-
-print(types_list)
-print(coordinates_list)
-
-# Ausgabe der Ergebnisse
-# for i, quader_type in enumerate(types_list):
-#     print(f'Typ {i + 1}: {quader_type}')
-#     print(f'Eckpunkte: {coordinates_list[i]}')
-#     print('---')
+if __name__ == "__main__":
+    main()

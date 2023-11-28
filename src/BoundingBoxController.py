@@ -44,6 +44,9 @@ class BoundingBoxController:
         self.tracklet_rects = coordinates_list
         self.tracklet_types = types_list
 
+    def get(self):
+        return self.tracklet_rects, self.tracklet_types
+
     def get_tracklets(self):
         #self.tracklet_rects, self.tracklet_types = simulate_tracklets()  
 
@@ -78,7 +81,7 @@ class BoundingBoxController:
     def render(self):
         if self.tracklet_rects is not None and self.tracklet_types is not None:
             for t_rects, t_type in zip(self.tracklet_rects, self.tracklet_types):
-                self.render_3d_bounding_box(t_rects, axes=[0, 1, 2], color=colors.get(t_type, (1.0, 1.0, 1.0)))          
+                self.render_3d_bounding_box(t_rects, axes=[0, 1, 2], color=colors.get(t_type.lower(), (1.0, 1.0, 1.0)))          
 
     def render_3d_bounding_box(self, vertices, axes=[0, 1, 2], color=(0, 0, 0)):
         vertices = vertices[axes, :]

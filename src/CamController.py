@@ -1,6 +1,7 @@
 import os
 import pygame
 from utils.utilities import incrementString
+from utils.settings import colors
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -18,9 +19,9 @@ class CamController:
         self.cams = [None]
         self.texture_ids = [None]
 
-        self.positions = [(100, display[1] / 2)]
+        self.positions = [(50, display[1] / 2-100)]
 
-        self.model = YOLO("YoloWeights/yolov8n.pt")
+        self.model = YOLO("YoloWeights/yolov8l.pt")
         self.classNames = self.model.names
 
         self.detections = []
@@ -29,6 +30,8 @@ class CamController:
         for i, cam_path in enumerate(self.cam_paths):
             file_path = os.path.join(cam_path, f"{self.current_frame}.png")
             self.cams[i] = pygame.image.load(file_path).convert()
+            
+
 
         next_frame = incrementString(self.current_frame)
         if all(os.path.exists(os.path.join(cam_path, f"{next_frame}.png")) for cam_path in self.cam_paths):
@@ -50,13 +53,23 @@ class CamController:
     def perform_yolo_detection(self, cam_index):
         imgdata = pygame.surfarray.array3d(self.cams[cam_index])
         imgdata = imgdata.swapaxes(0, 1)
-        results = self.model(imgdata, stream=True)
+        results = self.model(imgdata, stream=True, verbose=False)
+        
         temp_detect = []
+        image_height = imgdata.shape[0]
+        
         for r in results:
             boxes = r.boxes
             for box in boxes:
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
-                temp_detect.append((x1, y1, x2, y2))
+                cls = self.classNames[int(box.cls[0])]
+                
+                # Spiegle die Bounding Boxes vertikal
+                flipped_y1 = image_height - y2
+                flipped_y2 = image_height - y1
+                
+                temp_detect.append((x1, flipped_y1, x2, flipped_y2, cls))
+        
         self.detections = temp_detect
 
     def update(self):
@@ -67,12 +80,14 @@ class CamController:
 
     def render(self, scale=0.5):
         glPushAttrib(GL_CURRENT_BIT)
-        glColor3f(1.0, 0.0, 0.0)
         glBegin(GL_LINES)
 
         for rect in self.detections:
-            scaled_rect = [value * scale for value in rect]
+            cls = rect[4]
+            scaled_rect = [rect[i] * scale for i in range(4)]
             x1, y1, x2, y2 = scaled_rect
+            color=colors.get(cls.lower(), (1.0, 1.0, 1.0))
+            glColor3fv(color)
 
             x, y = self.positions[0]
             x = x / 20

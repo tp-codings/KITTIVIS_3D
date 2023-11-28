@@ -27,9 +27,9 @@ class TextController:
         self.speed_limit = speed_limit
 
     def render(self):
-        self.render_text(-35, 25, str(round(self.fps, 2)))
-        self.render_text(-35, 23, "Latitude: " + str(round(self.latitude, 6)))
-        self.render_text(-35, 21, "Longitude: " + str(round(self.longitude, 6)))
-        self.render_text(-35, 19, "Height: " + str(round(self.height, 2)))
-        self.render_text(-35, 17, "Ort: " + self.location)
-        self.render_text(-35, 15, "Speedlimit: " + self.speed_limit)
+        self.render_text(-27, 25, str(round(self.fps, 2)))
+        self.render_text(-27, 23, "Latitude: " + str(round(self.latitude, 6)))
+        self.render_text(-27, 21, "Longitude: " + str(round(self.longitude, 6)))
+        self.render_text(-27, 19, "Height: " + str(round(self.height, 2)))
+        self.render_text(-27, 17, "Ort: " + self.location)
+        self.render_text(-27, 15, "Speedlimit: " + self.speed_limit)

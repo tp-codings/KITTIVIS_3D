@@ -10,9 +10,10 @@ from src.InputController import InputController
 from src.TextController import TextController
 from src.GeoController import GeoController
 from src.BoundingBoxController import BoundingBoxController
+from src.ConnectionRenderer import ConnectionRenderer
 
 def init():
-    global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, stop, clock
+    global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, connectionRenderer, stop, clock
     display = (800, 800)
     stop = False
     clock = pygame.time.Clock()
@@ -23,7 +24,7 @@ def init():
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    gluPerspective(45, (800 / 600), 0.1, 10000.0)
+    gluPerspective(45, (display[0] / display[1]), 0.1, 10000.0)
     glTranslatef(0.0, 0.0, -70)
 
     geoController = GeoController()
@@ -32,6 +33,7 @@ def init():
     inputController = InputController()
     textController = TextController()
     boundingBoxController = BoundingBoxController()
+    connectionRenderer = ConnectionRenderer()
 
 def update():
     global stop
@@ -42,6 +44,7 @@ def update():
     latitude, longitude, height, location, speed_limit = geoController.update()
     fps = clock.get_fps()
     textController.update(fps, latitude, longitude, height, location, speed_limit)
+    connectionRenderer.update(*boundingBoxController.get())
 
 
 def render():
@@ -53,6 +56,7 @@ def render():
     pointCloudController.render(projection)
     boundingBoxController.render()
     camController.render()
+    connectionRenderer.render()
     pygame.display.flip()
 
 
