@@ -21,12 +21,22 @@ class ConnectionRenderer:
         glRotatef(angle_y, 0, 1, 0)
         glRotatef(angle_z, 0, 0, 1)
 
-    def calculateMidpoint(self, rect):
+    def calculate_midpoint_0(self, rect):
         midGroundX = rect[0][0] + (rect[0][2] - rect[0][0])/2
         midGroundY = rect[1][0] + (rect[1][2] - rect[1][0])/2
         midGroundZ = rect[2][0] + (rect[2][2] - rect[2][0])/2
         halfHeight = abs(rect[2][4]- rect[2][0])/2
         coord = (midGroundX, midGroundY, midGroundZ + halfHeight)
+
+        distance = np.linalg.norm(coord)
+        return coord, round(distance, 2)
+    
+    def calculate_midpoint_1(self, rect):
+        midGroundX = rect[0] + rect[3]/2 
+        midGroundY = rect[1] + rect[4]/2 
+        midGroundZ = rect[2] + rect[5]/2 
+        #halfHeight = abs(rect[2][4]- rect[2][0])/2
+        coord = (midGroundX, midGroundY, midGroundZ)
 
         distance = np.linalg.norm(coord)
         return coord, round(distance, 2)
@@ -37,7 +47,7 @@ class ConnectionRenderer:
         glVertex3fv(self.origin)
         glEnd()
 
-    def update(self, rects, types, initial_mouse_pos, zoom_factor, dragging):
+    def update(self, initial_mouse_pos, zoom_factor, dragging, mode, rects, types, scores = None):
         self.initial_mouse_pos = initial_mouse_pos
         self.zoom_factor = zoom_factor
         self.dragging = dragging
@@ -50,10 +60,17 @@ class ConnectionRenderer:
                 self.rotation_angles[2] + rel_x * 0.1
             )
 
-        temp = []    
-        if types != None and rects  != None:
-            for rect in rects:
-                temp.append(self.calculateMidpoint(rect))
+        temp = []  
+        # print(rects)
+        # print(types)  
+        if types is not None and rects is not None:
+            if mode == 0:
+                for rect in rects:
+                    temp.append(self.calculate_midpoint_0(rect))
+            elif mode == 1:
+                for i, rect in enumerate(rects):
+                    if scores[i] > 0.5:
+                        temp.append(self.calculate_midpoint_1(rect))
         
         self.tracklet_coords = temp
 

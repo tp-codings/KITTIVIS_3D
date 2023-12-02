@@ -7,7 +7,7 @@ import numpy as np
 
 
 class TextRenderer3D:
-    def __init__(self, text="TextRenderer3D", position=(0, 0, 0), font_size=80):
+    def __init__(self, text="KITTI", position=(0, 0, 0), font_size=80):
         self.text = text
         self.position = position
         self.font_size = font_size

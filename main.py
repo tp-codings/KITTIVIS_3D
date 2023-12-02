@@ -9,7 +9,7 @@ from src.CamController import CamController
 from src.InputController import InputController
 from src.TextController import TextController
 from src.GeoController import GeoController
-from src.BoundingBoxController import BoundingBoxController
+from src.BoundingBoxControllerGroundTruth import BoundingBoxControllerGroundTruth
 from src.BoundingBoxControllerPredictRead import BoundingBoxControllerPredictRead
 from src.BoundingBoxControllerPredict import BoundingBoxControllerPredict
 from src.ConnectionRenderer import ConnectionRenderer
@@ -17,7 +17,7 @@ import numpy as np
 
 
 def init():
-    global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, boundingBoxControllerPredictRead, boundingBoxControllerPredict, connectionRenderer, stop, clock
+    global inputController, pointCloudController, camController, textController, geoController, boundingBoxControllerGroundTruth, boundingBoxControllerPredict, connectionRenderer, stop, clock
     display = (800, 800)
     stop = False
     pygame.init()
@@ -36,11 +36,11 @@ def init():
     camController = CamController(display)
     inputController = InputController()
     textController = TextController()
-    boundingBoxController = BoundingBoxController()
+
+    boundingBoxControllerGroundTruth = BoundingBoxControllerGroundTruth()
 
     boundingBoxControllerPredict = BoundingBoxControllerPredict()
 
-    boundingBoxControllerPredictRead = BoundingBoxControllerPredictRead()
     connectionRenderer = ConnectionRenderer()
 
 
@@ -49,15 +49,16 @@ def update():
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()
     #camController.update()
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
-    #boundingBoxController.update(initial_mouse_pos, zoom_factor, dragging)
 
-    #boundingBoxControllerPredictRead.update(initial_mouse_pos, zoom_factor, dragging)
+    boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
     boundingBoxControllerPredict.update(initial_mouse_pos, zoom_factor, dragging)
 
     latitude, longitude, height, location, speed_limit = geoController.update()
     fps = clock.get_fps()
     textController.update(fps, latitude, longitude, height, location, speed_limit)
-    #connectionRenderer.update(*boundingBoxController.get(), initial_mouse_pos, zoom_factor, dragging)
+
+    #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 0, *boundingBoxControllerGroundTruth.get())
+    connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *boundingBoxControllerPredict.get())
 
 def render():
     clock.tick(60)  
@@ -66,14 +67,12 @@ def render():
     glClearColor(0.0, 0.0, 0.0, 1.0)
     pointCloudController.render(projection)
     textController.render()
-    #boundingBoxController.render()
-
-    #boundingBoxControllerPredictRead.render()
+    boundingBoxControllerGroundTruth.render()
 
     boundingBoxControllerPredict.render()
 
     #camController.render()
-    #connectionRenderer.render()
+    connectionRenderer.render()
     pygame.display.flip()
 
 if __name__ == "__main__":

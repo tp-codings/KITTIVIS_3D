@@ -26,6 +26,8 @@ class BoundingBoxControllerPredict:
         self.config_file = 'configs/pointpillars_hv_secfpn_8xb6-160e_kitti-3d-3class.py'
         self.checkpoint_file = 'weights/hv_pointpillars_secfpn_6x8_160e_kitti-3d-3class_20220301_150306-37dc2420.pth'
         self.model = init_model(self.config_file, self.checkpoint_file, device="cuda:0")
+
+        self.class_names = ["Pedestrian", "Cyclist", "Car"]
         np.set_printoptions(suppress=True)
 
 
@@ -37,15 +39,16 @@ class BoundingBoxControllerPredict:
         labels_3d = results.pred_instances_3d.get("labels_3d").cpu().numpy()
         scores_3d = results.pred_instances_3d.get("scores_3d").cpu().numpy()
 
-        print(bboxes_3d)
-        print(labels_3d)
-        print(scores_3d)
+        # print(bboxes_3d)
+        # print(labels_3d)
+        # print(scores_3d)
 
         self.tracklet_rects = bboxes_3d
         self.tracklet_types = labels_3d
         self.tracklet_scores = scores_3d
-    #def get(self):
-        #return self.tracklet_rects, self.tracklet_types
+
+    def get(self):
+        return self.tracklet_rects, self.tracklet_types, self.tracklet_scores
 
     def get_tracklets(self):
 
@@ -83,9 +86,9 @@ class BoundingBoxControllerPredict:
         if self.tracklet_rects is not None and self.tracklet_types is not None:
             for i, bbox in enumerate(self.tracklet_rects):
                 if self.tracklet_scores[i] > 0.5:
-                    self.render_bounding_box(*bbox)       
+                    self.render_bounding_box(*bbox, i)       
 
-    def render_bounding_box(self, x, y, z, x_size, y_size, z_size, yaw):
+    def render_bounding_box(self, x, y, z, x_size, y_size, z_size, yaw, index):
         vertices = np.array([
             [-x_size/2, -y_size/2, 0],
             [ x_size/2, -y_size/2, 0],
@@ -112,7 +115,8 @@ class BoundingBoxControllerPredict:
         self.rotate_scene(*self.rotation_angles)
         glPushAttrib(GL_CURRENT_BIT)
         glTranslatef(x, y, z)
-
+        #glColor3fv(colors[self.class_names[self.tracklet_types[index]].lower()])
+        glColor3fv((1,1,1))
         glBegin(GL_LINES)
         for edge in [
             (0, 1), (1, 2), (2, 3), (3, 0),
