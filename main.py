@@ -16,7 +16,6 @@ from src.ConnectionRenderer import ConnectionRenderer
 import numpy as np
 
 
-
 def init():
     global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, boundingBoxControllerPredictRead, boundingBoxControllerPredict, connectionRenderer, stop, clock
     display = (800, 800)
@@ -48,9 +47,9 @@ def init():
 def update():
     global stop
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()
-    camController.update()
+    #camController.update()
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
-    boundingBoxController.update(initial_mouse_pos, zoom_factor, dragging)
+    #boundingBoxController.update(initial_mouse_pos, zoom_factor, dragging)
 
     #boundingBoxControllerPredictRead.update(initial_mouse_pos, zoom_factor, dragging)
     boundingBoxControllerPredict.update(initial_mouse_pos, zoom_factor, dragging)
@@ -67,10 +66,10 @@ def render():
     glClearColor(0.0, 0.0, 0.0, 1.0)
     pointCloudController.render(projection)
     textController.render()
-    boundingBoxController.render()
+    #boundingBoxController.render()
 
     #boundingBoxControllerPredictRead.render()
-    
+
     boundingBoxControllerPredict.render()
 
     #camController.render()

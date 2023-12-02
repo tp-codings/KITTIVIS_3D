@@ -23,8 +23,8 @@ class BoundingBoxControllerPredict:
         self.dragging = False
         self.rotation_angles = (0,0,0)
 
-        self.config_file = 'configs/pointpillars_hv_secfpn_8xb6-160e_kitti-3d-car.py'
-        self.checkpoint_file = 'weights/hv_pointpillars_secfpn_6x8_160e_kitti-3d-car_20220331_134606-d42d15ed.pth'
+        self.config_file = 'configs/pointpillars_hv_secfpn_8xb6-160e_kitti-3d-3class.py'
+        self.checkpoint_file = 'weights/hv_pointpillars_secfpn_6x8_160e_kitti-3d-3class_20220301_150306-37dc2420.pth'
         self.model = init_model(self.config_file, self.checkpoint_file, device="cuda:0")
         np.set_printoptions(suppress=True)
 
@@ -36,6 +36,10 @@ class BoundingBoxControllerPredict:
         bboxes_3d = results.pred_instances_3d.get("bboxes_3d").tensor.cpu().numpy()
         labels_3d = results.pred_instances_3d.get("labels_3d").cpu().numpy()
         scores_3d = results.pred_instances_3d.get("scores_3d").cpu().numpy()
+
+        print(bboxes_3d)
+        print(labels_3d)
+        print(scores_3d)
 
         self.tracklet_rects = bboxes_3d
         self.tracklet_types = labels_3d
@@ -78,7 +82,7 @@ class BoundingBoxControllerPredict:
     def render(self):
         if self.tracklet_rects is not None and self.tracklet_types is not None:
             for i, bbox in enumerate(self.tracklet_rects):
-                if self.tracklet_scores[i] > 0.6:
+                if self.tracklet_scores[i] > 0.5:
                     self.render_bounding_box(*bbox)       
 
     def render_bounding_box(self, x, y, z, x_size, y_size, z_size, yaw):
