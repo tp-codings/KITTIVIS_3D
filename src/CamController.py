@@ -1,11 +1,12 @@
 import os
 import pygame
 from utils.utilities import incrementString
-from utils.settings import colors
+from configs.settings import colors
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 from ultralytics import YOLO
+import torch
 
 
 class CamController:
@@ -19,58 +20,49 @@ class CamController:
         self.cams = [None]
         self.texture_ids = [None]
 
-        self.positions = [(50, display[1] / 2-100)]
+        self.positions = [(50, display[1] / 2-5)]
 
-        self.model = YOLO("YoloWeights/yolov8l.pt")
+        self.model = YOLO("YoloWeights/yolov8n.pt")
         self.classNames = self.model.names
 
         self.detections = []
+        print("Cuda Available: ", torch.cuda.is_available())
 
     def get_data(self):
         for i, cam_path in enumerate(self.cam_paths):
             file_path = os.path.join(cam_path, f"{self.current_frame}.png")
             self.cams[i] = pygame.image.load(file_path).convert()
-            
-
 
         next_frame = incrementString(self.current_frame)
         if all(os.path.exists(os.path.join(cam_path, f"{next_frame}.png")) for cam_path in self.cam_paths):
             self.current_frame = next_frame
 
-    def load_texture(self, cam_index):
-        cam = self.cams[cam_index]
-        width, height = cam.get_width(), cam.get_height()
-        texture_data = pygame.image.tostring(cam, "RGBA", True)
-
-        if self.texture_ids[cam_index] is None:
-            self.texture_ids[cam_index] = glGenTextures(1)
-
-        glBindTexture(GL_TEXTURE_2D, self.texture_ids[cam_index])
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-
     def perform_yolo_detection(self, cam_index):
-        imgdata = pygame.surfarray.array3d(self.cams[cam_index])
-        imgdata = imgdata.swapaxes(0, 1)
+        imgdata = pygame.surfarray.array3d(self.cams[cam_index]).swapaxes(0, 1)
         results = self.model(imgdata, stream=True, verbose=False)
         
         temp_detect = []
         image_height = imgdata.shape[0]
         
         for r in results:
-            boxes = r.boxes
-            for box in boxes:
+            for box in r.boxes:
                 x1, y1, x2, y2 = map(int, box.xyxy[0])
                 cls = self.classNames[int(box.cls[0])]
                 
-                # Spiegle die Bounding Boxes vertikal
-                flipped_y1 = image_height - y2
-                flipped_y2 = image_height - y1
-                
-                temp_detect.append((x1, flipped_y1, x2, flipped_y2, cls))
+                temp_detect.append((x1, image_height - y2, x2, image_height - y1, cls))
         
         self.detections = temp_detect
+
+    def load_texture(self, cam_index):
+        cam = self.cams[cam_index]
+        width, height = cam.get_width(), cam.get_height()
+        texture_data = pygame.image.tostring(cam, "RGBA", True)
+
+        self.texture_ids[cam_index] = glGenTextures(1)
+        glBindTexture(GL_TEXTURE_2D, self.texture_ids[cam_index])
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
     def update(self):
         self.get_data()
@@ -84,59 +76,54 @@ class CamController:
 
         for rect in self.detections:
             cls = rect[4]
-            scaled_rect = [rect[i] * scale for i in range(4)]
+            scaled_rect = [coord * scale / 20 for coord in rect[:4]]
             x1, y1, x2, y2 = scaled_rect
-            color=colors.get(cls.lower(), (1.0, 1.0, 1.0))
+            color = colors.get(cls.lower(), (1.0, 1.0, 1.0))
             glColor3fv(color)
 
-            x, y = self.positions[0]
-            x = x / 20
-            y = y / 20
+            x, y = [coord / 20 for coord in self.positions[0]]
             shift_vector = (x, y)
 
-            glVertex2f((x1 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
-            glVertex2f((x2 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
+            glVertex2f(x1 + shift_vector[0], y1 + shift_vector[1])
+            glVertex2f(x2 + shift_vector[0], y1 + shift_vector[1])
 
-            glVertex2f((x2 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
-            glVertex2f((x2 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
+            glVertex2f(x2 + shift_vector[0], y1 + shift_vector[1])
+            glVertex2f(x2 + shift_vector[0], y2 + shift_vector[1])
 
-            glVertex2f((x2 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
-            glVertex2f((x1 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
+            glVertex2f(x2 + shift_vector[0], y2 + shift_vector[1])
+            glVertex2f(x1 + shift_vector[0], y2 + shift_vector[1])
 
-            glVertex2f((x1 / 20) + shift_vector[0], (y2 / 20) + shift_vector[1])
-            glVertex2f((x1 / 20) + shift_vector[0], (y1 / 20) + shift_vector[1])
+            glVertex2f(x1 + shift_vector[0], y2 + shift_vector[1])
+            glVertex2f(x1 + shift_vector[0], y1 + shift_vector[1])
         glEnd()
         glPopAttrib()
 
         for i, position in enumerate(self.positions):
-            x, y = position
+            x, y = [coord / 20 for coord in position]
 
-            width, height = self.cams[i].get_width(), self.cams[i].get_height()
+            width, height = self.cams[i].get_width() * scale / 20, self.cams[i].get_height() * scale / 20
 
             glEnable(GL_TEXTURE_2D)
             glBindTexture(GL_TEXTURE_2D, self.texture_ids[i])
 
-            tr = (x / 20 + width * scale / 20, y / 20 + height * scale / 20)
-            tl = (x / 20, y / 20 + height * scale / 20)
-
-            bl = (x / 20, y / 20)
-            br = (x / 20 + width * scale / 20, y / 20)
-
+            tr = (x + width, y + height)
+            tl = (x, y + height)
+            bl = (x, y)
+            br = (x + width, y)
 
             glBegin(GL_QUADS)
-            glTexCoord2f(1, 0)  # Unten links
+            glTexCoord2f(1, 0)
             glVertex2f(br[0], br[1])
 
-            glTexCoord2f(0, 0)  # Unten rechts
+            glTexCoord2f(0, 0)
             glVertex2f(bl[0], bl[1])
 
-            glTexCoord2f(0, 1)  # Oben rechts
+            glTexCoord2f(0, 1)
             glVertex2f(tl[0], tl[1])
 
-            glTexCoord2f(1, 1)  # Oben links
+            glTexCoord2f(1, 1)
             glVertex2f(tr[0], tr[1])
             glEnd()
 
             glDisable(GL_TEXTURE_2D)
-
             glDeleteTextures([self.texture_ids[i]])

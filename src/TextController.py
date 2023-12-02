@@ -13,7 +13,7 @@ class TextController:
 
     def render_text(self, x, y, text):                                                
         position = (x, y, 0)
-        textSurface = self.font.render(text, True, (255, 255, 66, 255)).convert_alpha()
+        textSurface = self.font.render(text, True, (0, 255, 66, 0)).convert_alpha()
         textData = image.tostring(textSurface, "RGBA", True)
         glRasterPos3d(*position)
         glDrawPixels(textSurface.get_width(), textSurface.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)

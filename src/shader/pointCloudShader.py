@@ -18,10 +18,12 @@ out vec4 FragColor;
 
 void main()
 {
-    vec3 color = mix(vec3(1.0, 1.0, 1.0), vec3(0.0, 1.0, 0.0), height);
-    color = mix(color, vec3(1.0, 1.0, 0.0), height);
-    color = mix(color, vec3(.0, 1.0, 0.0), height);
+    vec3 brownColor = vec3(43.0/255.0, 63.0/255.0, 0.0/255.0);
     
+    vec3 greenColor = vec3(34.0/255.0, 139.0/255.0, 34.0/255.0);
+
+    vec3 color = mix(brownColor, greenColor, height);
+
     FragColor = vec4(color, 1.0);
 }
 """

@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from utils.settings import colors
+from configs.settings import colors
 from utils.simulateData import simulate_tracklets
 from utils.utilities import incrementString
 import pygame
@@ -9,7 +9,7 @@ import numpy as np
 class BoundingBoxController:
     def __init__(self):
         #hier Pfade anlegen
-        self.tracklet_path = os.path.join("data", "Live", "tracklets")
+        self.tracklet_path = os.path.join("data", "Live", "tracklets", "data")
 
         self.current_frame = "0000000000"
         self.last_frame = ""
