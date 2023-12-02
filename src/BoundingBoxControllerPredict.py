@@ -16,6 +16,7 @@ class BoundingBoxControllerPredict:
         self.last_frame = ""
         self.tracklet_rects = None
         self.tracklet_types = None
+        self.tracklet_scores = None
 
         self.initial_mouse_pos = None
         self.zoom_factor = 1.0
@@ -36,11 +37,9 @@ class BoundingBoxControllerPredict:
         labels_3d = results.pred_instances_3d.get("labels_3d").cpu().numpy()
         scores_3d = results.pred_instances_3d.get("scores_3d").cpu().numpy()
 
-        print(bboxes_3d)
-        print(labels_3d)
-        print(scores_3d)
-
-
+        self.tracklet_rects = bboxes_3d
+        self.tracklet_types = labels_3d
+        self.tracklet_scores = scores_3d
     #def get(self):
         #return self.tracklet_rects, self.tracklet_types
 
@@ -78,8 +77,9 @@ class BoundingBoxControllerPredict:
 
     def render(self):
         if self.tracklet_rects is not None and self.tracklet_types is not None:
-            for bbox in self.tracklet_rects:
-                self.render_bounding_box(*bbox)       
+            for i, bbox in enumerate(self.tracklet_rects):
+                if self.tracklet_scores[i] > 0.6:
+                    self.render_bounding_box(*bbox)       
 
     def render_bounding_box(self, x, y, z, x_size, y_size, z_size, yaw):
         vertices = np.array([

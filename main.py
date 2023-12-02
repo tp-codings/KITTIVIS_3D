@@ -17,8 +17,6 @@ import numpy as np
 
 
 
-
-
 def init():
     global inputController, pointCloudController, camController, textController, geoController, boundingBoxController, boundingBoxControllerPredictRead, boundingBoxControllerPredict, connectionRenderer, stop, clock
     display = (800, 800)
@@ -72,7 +70,8 @@ def render():
     boundingBoxController.render()
 
     #boundingBoxControllerPredictRead.render()
-    #boundingBoxControllerPredict.render()
+    
+    boundingBoxControllerPredict.render()
 
     #camController.render()
     #connectionRenderer.render()
