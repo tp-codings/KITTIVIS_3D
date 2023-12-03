@@ -122,8 +122,8 @@ class BoundingBoxControllerPredict:
         self.rotate_scene(*self.rotation_angles)
         glPushAttrib(GL_CURRENT_BIT)
         glTranslatef(x, y, z)
-        #glColor3fv(colors[self.class_names[self.tracklet_types[index]].lower()])
-        glColor3fv((1,1,1))
+        glColor3fv(colors[self.class_names[self.tracklet_types[index]].lower()])
+        #glColor3fv((1,1,1))
         glBegin(GL_LINES)
         for edge in [
             (0, 1), (1, 2), (2, 3), (3, 0),

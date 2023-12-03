@@ -19,7 +19,7 @@ class TextRenderer3D:
         original_width, original_height = text_surface.get_width(), text_surface.get_height()
 
         # Faktor für die Breitenvergrößerung
-        width_factor = 5.0
+        width_factor = 1.0
 
         # Neue Breite berechnen
         new_width = int(original_width * width_factor)
@@ -68,7 +68,7 @@ class TextRenderer3D:
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, self.texture_id)
 
-        size = 3
+        size = 1
 
         glBegin(GL_QUADS)
         glTexCoord2f(0, 0)

@@ -11,4 +11,4 @@ colors = {
     'misc' : (0.0, 0.4, 1.0)
 }
 
-base_directory = os.path.join("data", "Live")
+base_directory = os.path.join("data", "0071")
