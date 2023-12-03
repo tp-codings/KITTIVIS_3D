@@ -1,6 +1,6 @@
 from mmdet3d.apis import init_model, inference_detector
 from OpenGL.GL import *
-from configs.settings import colors
+from configs.settings import colors, base_directory
 from utils.utilities import incrementString
 import pygame
 import json
@@ -10,7 +10,7 @@ import numpy as np
 class BoundingBoxControllerPredict:
     def __init__(self):
         #hier Pfade anlegen
-        self.velo_path = os.path.join("data", "Live", "velodyne_points", "data")
+        self.velo_path = os.path.join(base_directory, "velodyne_points", "source")
 
         self.current_frame = "0000000000"
         self.last_frame = ""
@@ -53,13 +53,20 @@ class BoundingBoxControllerPredict:
     def get_tracklets(self):
 
         file_path = os.path.join(self.velo_path, self.current_frame + ".bin")
-
-        self.predict_data(file_path)
-
-        next_frame = incrementString(self.current_frame)
-        file_path = os.path.join(self.velo_path, next_frame + ".bin")
         if os.path.exists(file_path):
-            self.current_frame = next_frame
+            self.predict_data(file_path)
+
+            next_frame = incrementString(self.current_frame)
+            file_path = os.path.join(self.velo_path, next_frame + ".bin")
+            if os.path.exists(file_path):
+                self.current_frame = next_frame
+        else:
+            print(f"no data for tracklet prediction at: {file_path}")
+            self.tracklet_rects = None
+            self.tracklet_types = None
+            self.tracklet_scores = None
+            self.current_frame = "0000000000"
+
 
               
     def rotate_scene(self, angle_x, angle_y, angle_z):
@@ -83,7 +90,7 @@ class BoundingBoxControllerPredict:
         self.get_tracklets()
 
     def render(self):
-        if self.tracklet_rects is not None and self.tracklet_types is not None:
+        if self.tracklet_rects is not None and self.tracklet_types is not None and self.tracklet_scores is not None:
             for i, bbox in enumerate(self.tracklet_rects):
                 if self.tracklet_scores[i] > 0.5:
                     self.render_bounding_box(*bbox, i)       

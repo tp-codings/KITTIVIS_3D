@@ -47,7 +47,7 @@ def init():
 def update():
     global stop
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()
-    #camController.update()
+    camController.update()
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
 
     boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
@@ -55,7 +55,7 @@ def update():
 
     latitude, longitude, height, location, speed_limit = geoController.update()
     fps = clock.get_fps()
-    textController.update(fps, latitude, longitude, height, location, speed_limit)
+    textController.update(str(round(fps, 2)), str(round(latitude, 6)), str(round(longitude, 6)), str(round(height, 2)), location, speed_limit)
 
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 0, *boundingBoxControllerGroundTruth.get())
     connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *boundingBoxControllerPredict.get())
@@ -71,7 +71,7 @@ def render():
 
     boundingBoxControllerPredict.render()
 
-    #camController.render()
+    camController.render()
     connectionRenderer.render()
     pygame.display.flip()
 

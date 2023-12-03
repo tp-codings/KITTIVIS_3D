@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from configs.settings import colors
+from configs.settings import colors, base_directory
 from utils.simulateData import simulate_tracklets
 from utils.utilities import incrementString
 import pygame
@@ -9,7 +9,7 @@ import numpy as np
 class BoundingBoxControllerGroundTruth:
     def __init__(self):
         #hier Pfade anlegen
-        self.tracklet_path = os.path.join("data", "Live", "tracklets", "data")
+        self.tracklet_path = os.path.join(base_directory, "tracklets", "source")
 
         self.current_frame = "0000000000"
         self.last_frame = ""
@@ -51,11 +51,19 @@ class BoundingBoxControllerGroundTruth:
         #self.tracklet_rects, self.tracklet_types = simulate_tracklets()  
 
         file_path = os.path.join(self.tracklet_path, self.current_frame + ".txt")
-        self.parse_tracklets_data(file_path)
-        next_frame = incrementString(self.current_frame)
-        file_path = os.path.join(self.tracklet_path, next_frame + ".txt")
+
         if os.path.exists(file_path):
-            self.current_frame = next_frame
+            self.parse_tracklets_data(file_path)
+            next_frame = incrementString(self.current_frame)
+            file_path = os.path.join(self.tracklet_path, next_frame + ".txt")
+            if os.path.exists(file_path):
+                self.current_frame = next_frame
+        else:
+            print(f"no data for tracklet ground truth at: {file_path}")
+            self.tracklet_rects = None
+            self.tracklet_types = None            
+            self.current_frame = "0000000000"
+
 
               
     def rotate_scene(self, angle_x, angle_y, angle_z):

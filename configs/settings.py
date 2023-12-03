@@ -1,3 +1,5 @@
+import os
+
 colors = {
     'car': (0.0, 0.0, 1.0),  # Blau
     'tram': (1.0, 0.0, 0.0),  # Rot
@@ -8,3 +10,5 @@ colors = {
     'sitter': (0.0, 0.0, 0.0),  # Schwarz
     'misc' : (0.0, 0.4, 1.0)
 }
+
+base_directory = os.path.join("data", "Live")
