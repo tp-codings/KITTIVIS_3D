@@ -15,7 +15,6 @@ from src.BoundingBoxControllerPredict import BoundingBoxControllerPredict
 from src.ConnectionRenderer import ConnectionRenderer
 import numpy as np
 
-
 def init():
     global inputController, pointCloudController, camController, textController, geoController, boundingBoxControllerGroundTruth, boundingBoxControllerPredict, connectionRenderer, stop, clock
     display = (800, 800)
@@ -28,7 +27,7 @@ def init():
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    gluPerspective(45, (display[0] / display[1]), 0.1, 10000.0)
+    gluPerspective(45, (display[0] / display[1]), 0.1, 100000.0)
     glTranslatef(0.0, 0.0, -70)
 
     geoController = GeoController()

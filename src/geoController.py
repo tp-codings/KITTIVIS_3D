@@ -12,7 +12,7 @@ class GeoController:
         self.location = "unknown"
         self.speed_limit = "unknown"
 
-        self.oxts_path = os.path.join(base_directory, "oxts", "data")
+        self.oxts_path = os.path.join(base_directory, "oxts", "source")
 
         self.current_frame = "0000000000"
 

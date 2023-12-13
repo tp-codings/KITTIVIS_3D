@@ -34,7 +34,7 @@ class CamController:
             if os.path.exists(file_path):
                 self.cams[i] = pygame.image.load(file_path).convert()
             else:
-                print(f"no data for cam0{i} at: {file_path}")
+                #print(f"no data for cam0{i} at: {file_path}")
                 self.cams[i] = None
                 self.current_frame = "0000000000"
 

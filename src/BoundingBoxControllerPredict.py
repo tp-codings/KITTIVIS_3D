@@ -59,6 +59,8 @@ class BoundingBoxControllerPredict:
             next_frame = incrementString(self.current_frame)
             file_path = os.path.join(self.velo_path, next_frame + ".bin")
             if os.path.exists(file_path):
+                print(self.tracklet_rects)
+
                 self.current_frame = next_frame
         else:
             print(f"no data for tracklet prediction at: {file_path}")

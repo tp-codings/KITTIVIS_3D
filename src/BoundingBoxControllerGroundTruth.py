@@ -108,7 +108,8 @@ class BoundingBoxControllerGroundTruth:
 
         for connection in connections:
             glBegin(GL_LINES)
-            glColor3fv(color)
+            #glColor3fv(color)
+            glColor3fv((1,1,1))
             for vertex in connection:
                 glVertex3fv(vertices[:, vertex])
             glEnd()
