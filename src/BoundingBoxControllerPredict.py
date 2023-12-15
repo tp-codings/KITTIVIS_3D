@@ -38,8 +38,9 @@ class BoundingBoxControllerPredict:
         bboxes_3d = results.pred_instances_3d.get("bboxes_3d").tensor.cpu().numpy()
         labels_3d = results.pred_instances_3d.get("labels_3d").cpu().numpy()
         scores_3d = results.pred_instances_3d.get("scores_3d").cpu().numpy()
-
-        # print(bboxes_3d)
+        
+        print("OpenDet")
+        print(bboxes_3d)
         # print(labels_3d)
         # print(scores_3d)
 
@@ -59,7 +60,7 @@ class BoundingBoxControllerPredict:
             next_frame = incrementString(self.current_frame)
             file_path = os.path.join(self.velo_path, next_frame + ".bin")
             if os.path.exists(file_path):
-                print(self.tracklet_rects)
+                #print(self.tracklet_rects)
 
                 self.current_frame = next_frame
         else:
