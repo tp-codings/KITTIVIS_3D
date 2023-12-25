@@ -218,6 +218,18 @@ class Head(nn.Module):
 
 
 class PointPillars(nn.Module):
+    '''
+        bboxes: shape=(n, 7)
+        return: shape=(n, 8, 3)
+               ^ z   x            6 ------ 5
+               |   /             / |      /|
+               |  /             2 -|---- 1 |   
+        y      | /              |  |     | | 
+        <------|o               | 7 -----| 4
+                                |/   o   |/    
+                                3 ------ 0 
+        x: front, y: left, z: top
+    '''
 
     def __init__(self,
                  nclasses=3, 
@@ -225,6 +237,7 @@ class PointPillars(nn.Module):
                  point_cloud_range=[-30.0, -39.68, -3, 89.12, 39.68, 1],
                  max_num_points=32,
                  max_voxels=(160000, 400000)):
+        
         super().__init__()
         self.nclasses = nclasses
         self.pillar_layer = PillarLayer(voxel_size=voxel_size, 

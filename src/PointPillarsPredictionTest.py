@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from configs.settings import colors, base_directory
+from configs.settings import colors, base_directory, min_tresh
 from utils.utilities import incrementString
 import pygame
 import os
@@ -29,7 +29,7 @@ class PointPillarsPredictionTest:
         #Modelsetup
         self.class_names = ["Pedestrian", "Cyclist", "Car"]
         self.pcd_limit_range = np.array([-50.0, -40, -3, 70.4, 40, 0.0], dtype=np.float32)
-        self.ckpt = "pillar_logs/checkpoints/epoch_160.pth"
+        self.ckpt = "pillar_logs/checkpoints/PP_MOF_160.pth"
 
         self.model = PointPillars(nclasses=len(self.class_names)).cuda()
         self.model.load_state_dict(torch.load(self.ckpt))
@@ -56,9 +56,9 @@ class PointPillarsPredictionTest:
         self.tracklet_rects = lidar_bboxes
         self.tracklet_types = labels
         self.tracklet_scores = scores
-        print("PP ", self.current_frame)
-        print(lidar_bboxes)
-        print("---------------------------------------")
+        #print("PP ", self.current_frame)
+        #print(lidar_bboxes)
+        #print("---------------------------------------")
 
 
     def get(self):
@@ -108,7 +108,7 @@ class PointPillarsPredictionTest:
     def render(self):
         if self.tracklet_rects is not None and self.tracklet_types is not None and self.tracklet_scores is not None:
             for i, bbox in enumerate(self.tracklet_rects):
-                if self.tracklet_scores[i] > 0.6:
+                if self.tracklet_scores[i] > min_tresh:
                     self.render_bounding_box(*bbox, i)       
 
     def render_bounding_box(self, x, y, z, x_size, y_size, z_size, yaw, index):

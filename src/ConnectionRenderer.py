@@ -3,6 +3,8 @@ from OpenGL.GL import *
 import pygame
 from src.TextController3D import TextController3D
 import numpy as np
+from configs.settings import min_tresh
+
 class ConnectionRenderer:
     def __init__(self):
         self.origin = (0, 0, 0)
@@ -32,11 +34,12 @@ class ConnectionRenderer:
         return coord, round(distance, 2)
     
     def calculate_midpoint_1(self, rect):
-        midGroundX = rect[0] + rect[3]/2 
-        midGroundY = rect[1] + rect[4]/2 
-        midGroundZ = rect[2] + rect[5]/2 
-        #halfHeight = abs(rect[2][4]- rect[2][0])/2
-        coord = (midGroundX, midGroundY, midGroundZ)
+        midX = rect[0] 
+        midY = rect[1]
+        midZ = rect[2] + rect[5] / 2
+        coord = (midX, midY, midZ)
+
+        print(coord)
 
         distance = np.linalg.norm(coord)
         return coord, round(distance, 2)
@@ -61,7 +64,7 @@ class ConnectionRenderer:
             )
 
         temp = []  
-        # print(rects)
+        print(rects)
         # print(types)  
         if types is not None and rects is not None:
             if mode == 0:
@@ -69,7 +72,7 @@ class ConnectionRenderer:
                     temp.append(self.calculate_midpoint_0(rect))
             elif mode == 1:
                 for i, rect in enumerate(rects):
-                    if scores[i] > 0.5:
+                    if scores[i] > min_tresh:
                         temp.append(self.calculate_midpoint_1(rect))
         
         self.tracklet_coords = temp

@@ -1,6 +1,6 @@
 from mmdet3d.apis import init_model, inference_detector
 from OpenGL.GL import *
-from configs.settings import colors, base_directory
+from configs.settings import colors, base_directory, min_tresh
 from utils.utilities import incrementString
 import pygame
 import json
@@ -95,7 +95,7 @@ class BoundingBoxControllerPredict:
     def render(self):
         if self.tracklet_rects is not None and self.tracklet_types is not None and self.tracklet_scores is not None:
             for i, bbox in enumerate(self.tracklet_rects):
-                if self.tracklet_scores[i] > 0.5:
+                if self.tracklet_scores[i] > min_tresh:
                     self.render_bounding_box(*bbox, i)       
 
     def render_bounding_box(self, x, y, z, x_size, y_size, z_size, yaw, index):

@@ -6,6 +6,7 @@ import argparse
 from tqdm import tqdm
 import time
 from utils.utilities import incrementString
+import keyboard
 
 def check_folders_existence(cam_paths, oxts_path, tracklets_path, velodyne_path):
     existence = [True, True, True, True]
@@ -32,12 +33,12 @@ def check_folders_existence(cam_paths, oxts_path, tracklets_path, velodyne_path)
 
     return existence
 
-def copy_file(base_path, current_frame, ending):
+def copy_file(base_path, current_frame, ending, filter = "data"):
     target_path = os.path.join(base_path, "source")
     if not os.path.exists(target_path):
         os.makedirs(target_path)
 
-    data_path = os.path.join(base_path, "data", current_frame + ending)
+    data_path = os.path.join(base_path, filter, current_frame + ending)
     target_path = os.path.join(target_path)
 
     if not os.path.exists(data_path):
@@ -87,6 +88,8 @@ def print_output(output):
     print(output)
     progress_bar.update(1)
 
+global pause
+pause = False
 
 if __name__ == "__main__":
     global output, progress_bar
@@ -95,9 +98,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simulate realtime data by moving files from data to source (img0-3, oxts, tracklets, velodyne_points)")
     parser.add_argument("--folder_path", help="Path to data folder", default = "Live/data")
     parser.add_argument("--time_step", help="Time step between frames", default= 1.0, type=float)
+    parser.add_argument("--mode", help="FPF (Frame Per Frame) or default", default = "default")
+    parser.add_argument("--filter", help="Option for selecting folder with filtered pointcloud", default = "data")
     args = parser.parse_args()
+
     base_dir = args.folder_path
     time_step = args.time_step
+    mode = args.mode
+    filter_sys = args.filter
 
     cam_paths = [os.path.join(base_dir, f"image_{i:02d}") for i in range(0, 4)]
     oxts_path = os.path.join(base_dir, "oxts")
@@ -134,7 +142,7 @@ if __name__ == "__main__":
             add_output(f"no data at: {file_path}")
 
     if existence[3] == True:
-        file_path = os.path.join(velodyne_path, "data")
+        file_path = os.path.join(velodyne_path, filter_sys)
         if os.path.exists(file_path):
             velodyne_data = file_path
         else:
@@ -155,8 +163,20 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, on_exit)
     signal.signal(signal.SIGTERM, on_exit)
 
+
     while True:
         output = ""
+        
+        if mode == "FPF":
+            keyboard.wait('space')
+        elif mode == "default":
+            if not pause:
+                if keyboard.is_pressed('space'):
+                    pause = True
+            else:
+                keyboard.wait('space')
+                pause = False
+
 
         try:
             if cam_data is not None:
@@ -170,7 +190,7 @@ if __name__ == "__main__":
                 copy_file(tracklets_path, current_frame, ".txt")
 
             if velodyne_data is not None:
-                copy_file(velodyne_path, current_frame, ".bin")
+                copy_file(velodyne_path, current_frame, ".bin", filter=filter_sys)
 
             current_frame = incrementString(current_frame)
             frame_index += 1

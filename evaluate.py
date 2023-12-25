@@ -341,6 +341,7 @@ def main(args):
                 P2 = calib_info['P2'].astype(np.float32)
                 image_shape = data_dict['batched_img_info'][j]['image_shape']
                 idx = data_dict['batched_img_info'][j]['image_idx']
+                result_filter = result
                 result_filter = keep_bbox_from_image_range(result, tr_velo_to_cam, r0_rect, P2, image_shape)
                 result_filter = keep_bbox_from_lidar_range(result_filter, pcd_limit_range)
 

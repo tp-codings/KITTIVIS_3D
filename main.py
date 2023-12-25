@@ -46,13 +46,14 @@ def init():
     connectionRenderer = ConnectionRenderer()
 
 
+
 def update():
     global stop
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()
     #camController.update()
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
 
-    boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
+    #boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
 
     #boundingBoxControllerPredict.update(initial_mouse_pos, zoom_factor, dragging)
 
@@ -64,6 +65,7 @@ def update():
 
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 0, *boundingBoxControllerGroundTruth.get())
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *boundingBoxControllerPredict.get())
+    connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *pointPillarsPredictionTest.get())
 
 
 
@@ -74,14 +76,14 @@ def render():
     glClearColor(0.0, 0.0, 0.0, 1.0)
     pointCloudController.render(projection)
     textController.render()
-    boundingBoxControllerGroundTruth.render()
+    #boundingBoxControllerGroundTruth.render()
 
     #boundingBoxControllerPredict.render()
 
     pointPillarsPredictionTest.render()
 
     #camController.render()
-    #connectionRenderer.render()
+    connectionRenderer.render()
     pygame.display.flip()
 
 if __name__ == "__main__":

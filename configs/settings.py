@@ -11,6 +11,8 @@ colors = {
     'misc' : (0.0, 0.4, 1.0)
 }
 
-_seq = "data/0071"
+min_tresh = 0.6
+
+_seq = "data/0051"
 
 base_directory = _seq
