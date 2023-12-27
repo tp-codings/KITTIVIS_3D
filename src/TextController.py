@@ -8,8 +8,7 @@ class TextController:
         self.latitude = 0
         self.longitude = 0
         self.height = 0
-        self.location = ""
-        self.speed_limit = ""
+        self.point_count = 0
 
     def render_text(self, x, y, text):                                                
         position = (x, y, 0)
@@ -18,18 +17,16 @@ class TextController:
         glRasterPos3d(*position)
         glDrawPixels(textSurface.get_width(), textSurface.get_height(), GL_RGBA, GL_UNSIGNED_BYTE, textData)
 
-    def update(self, fps, latitude, longitude, height, location, speed_limit):
+    def update(self, fps, latitude, longitude, height, point_count):
         self.fps = fps
         self.latitude = latitude
         self.longitude = longitude
         self.height = height
-        self.location = location
-        self.speed_limit = speed_limit
+        self.point_count = point_count
 
     def render(self):
         self.render_text(-27, 25, self.fps)
         self.render_text(-27, 23, "Latitude: " + self.latitude)
         self.render_text(-27, 21, "Longitude: " + self.longitude)
         self.render_text(-27, 19, "Height: " + self.height)
-        self.render_text(-27, 17, "Ort: " + self.location)
-        self.render_text(-27, 15, "Speedlimit: " + self.speed_limit)
+        self.render_text(-27, 17, "Punkte: " + self.point_count)

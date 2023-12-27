@@ -59,9 +59,9 @@ def update():
 
     pointPillarsPredictionTest.update(initial_mouse_pos, zoom_factor, dragging)
 
-    latitude, longitude, height, location, speed_limit = geoController.update()
+    latitude, longitude, height = geoController.update()
     fps = clock.get_fps()
-    textController.update(str(round(fps, 2)), str(round(latitude, 6)), str(round(longitude, 6)), str(round(height, 2)), location, speed_limit)
+    textController.update(str(round(fps, 2)), str(round(latitude, 6)), str(round(longitude, 6)), str(round(height, 2)), str(pointCloudController.get_point_count()))
 
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 0, *boundingBoxControllerGroundTruth.get())
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *boundingBoxControllerPredict.get())

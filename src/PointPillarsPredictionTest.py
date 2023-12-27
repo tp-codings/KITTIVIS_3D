@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from configs.settings import colors, base_directory, min_tresh
+from configs.settings import colors, base_directory, min_tresh, ckpt
 from utils.utilities import incrementString
 import pygame
 import os
@@ -29,7 +29,7 @@ class PointPillarsPredictionTest:
         #Modelsetup
         self.class_names = ["Pedestrian", "Cyclist", "Car"]
         self.pcd_limit_range = np.array([-50.0, -40, -3, 70.4, 40, 0.0], dtype=np.float32)
-        self.ckpt = "pillar_logs/checkpoints/PP_MOF_160.pth"
+        self.ckpt = ckpt
 
         self.model = PointPillars(nclasses=len(self.class_names)).cuda()
         self.model.load_state_dict(torch.load(self.ckpt))

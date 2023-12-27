@@ -15,4 +15,6 @@ min_tresh = 0.6
 
 _seq = "data/0051"
 
+ckpt = "pillar_logs/checkpoints/PP_MSF_160.pth"
+
 base_directory = _seq

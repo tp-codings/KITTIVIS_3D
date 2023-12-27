@@ -39,8 +39,6 @@ class ConnectionRenderer:
         midZ = rect[2] + rect[5] / 2
         coord = (midX, midY, midZ)
 
-        print(coord)
-
         distance = np.linalg.norm(coord)
         return coord, round(distance, 2)
 
@@ -64,7 +62,6 @@ class ConnectionRenderer:
             )
 
         temp = []  
-        print(rects)
         # print(types)  
         if types is not None and rects is not None:
             if mode == 0:

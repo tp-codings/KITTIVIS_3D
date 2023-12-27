@@ -17,6 +17,10 @@ class PointCloudController:
         self.vbo = None
         self.velo_range = 0
         self.shader_program = init_shader_program(vertex_shader, fragment_shader)
+        self.len_data = 0
+
+    def get_point_count(self):
+        return self.len_data
 
     def get_data(self):
         file_path = os.path.join(self.velo_path, self.current_frame + ".bin")
@@ -61,6 +65,9 @@ class PointCloudController:
         points_step = int(1. / 1.)
 
         data = self.get_data()
+        if data is not None:
+            self.len_data = len(data)
+
         if data is not None: 
             self.velo_range = range(0, data.shape[0], points_step)
             self.vbo = self.load_point_vbo(data[self.velo_range, :-1])
