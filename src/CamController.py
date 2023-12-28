@@ -1,7 +1,7 @@
 import os
 import pygame
 from utils.utilities import incrementString
-from configs.settings import colors, base_directory
+from configs.settings import colors, base_directory, start_frame
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -14,7 +14,7 @@ class CamController:
     def __init__(self, display):
         self.cam_paths = [os.path.join(base_directory, f"image_{i:02d}", "source") for i in range(3, 4)]
 
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
 
         self.cams = [None for x in range(len(self.cam_paths))]
         self.texture_ids = [None for x in range(len(self.cam_paths))]
@@ -36,7 +36,7 @@ class CamController:
             else:
                 #print(f"no data for cam0{i} at: {file_path}")
                 self.cams[i] = None
-                self.current_frame = "0000000000"
+                self.current_frame = start_frame
 
 
         next_frame = incrementString(self.current_frame)

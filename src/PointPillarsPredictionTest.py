@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from configs.settings import colors, base_directory, min_tresh, ckpt
+from configs.settings import colors, base_directory, min_tresh, ckpt, start_frame
 from utils.utilities import incrementString
 import pygame
 import os
@@ -15,7 +15,7 @@ class PointPillarsPredictionTest:
         #hier Pfade anlegen
         self.velo_path = os.path.join(base_directory, "velodyne_points", "source")
 
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
         self.last_frame = ""
         self.tracklet_rects = None
         self.tracklet_types = None
@@ -25,6 +25,8 @@ class PointPillarsPredictionTest:
         self.zoom_factor = 1.0
         self.dragging = False
         self.rotation_angles = (0,0,0)
+
+        self.predicted = False
 
         #Modelsetup
         self.class_names = ["Pedestrian", "Cyclist", "Car"]
@@ -56,9 +58,9 @@ class PointPillarsPredictionTest:
         self.tracklet_rects = lidar_bboxes
         self.tracklet_types = labels
         self.tracklet_scores = scores
-        #print("PP ", self.current_frame)
-        #print(lidar_bboxes)
-        #print("---------------------------------------")
+        print("PP ", self.current_frame)
+        print(lidar_bboxes)
+        print("---------------------------------------")
 
 
     def get(self):
@@ -68,20 +70,21 @@ class PointPillarsPredictionTest:
 
         file_path = os.path.join(self.velo_path, self.current_frame + ".bin")
         if os.path.exists(file_path):
-            self.predict_data(file_path)
-
+            if not self.predicted:
+                self.predict_data(file_path)
+            self.predicted = True
             next_frame = incrementString(self.current_frame)
             file_path = os.path.join(self.velo_path, next_frame + ".bin")
             if os.path.exists(file_path):
                 #print(self.tracklet_rects)
-
+                self.predicted = False
                 self.current_frame = next_frame
         else:
             print(f"no data for tracklet prediction at: {file_path}")
             self.tracklet_rects = None
             self.tracklet_types = None
             self.tracklet_scores = None
-            self.current_frame = "0000000000"
+            self.current_frame = start_frame
 
 
               

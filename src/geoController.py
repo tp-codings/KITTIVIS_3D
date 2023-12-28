@@ -1,7 +1,7 @@
 import os
 from utils.utilities import incrementString
 from utils.getGeo import get_maxspeed, get_location
-from configs.settings import base_directory
+from configs.settings import base_directory, start_frame
 
 class GeoController:
 
@@ -12,7 +12,7 @@ class GeoController:
 
         self.oxts_path = os.path.join(base_directory, "oxts", "source")
 
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
 
     def get_data(self):
         file_path = os.path.join(self.oxts_path, self.current_frame + ".txt")

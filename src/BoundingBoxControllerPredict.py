@@ -1,6 +1,6 @@
 from mmdet3d.apis import init_model, inference_detector
 from OpenGL.GL import *
-from configs.settings import colors, base_directory, min_tresh
+from configs.settings import colors, base_directory, min_tresh, start_frame
 from utils.utilities import incrementString
 import pygame
 import json
@@ -12,7 +12,7 @@ class BoundingBoxControllerPredict:
         #hier Pfade anlegen
         self.velo_path = os.path.join(base_directory, "velodyne_points", "source")
 
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
         self.last_frame = ""
         self.tracklet_rects = None
         self.tracklet_types = None
@@ -68,7 +68,7 @@ class BoundingBoxControllerPredict:
             self.tracklet_rects = None
             self.tracklet_types = None
             self.tracklet_scores = None
-            self.current_frame = "0000000000"
+            self.current_frame = start_frame
 
 
               

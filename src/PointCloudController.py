@@ -3,7 +3,7 @@ import numpy as np
 from utils.utilities import incrementString
 from src.shader.pointCloudShader import vertex_shader, fragment_shader
 from utils.shaderHandler import init_shader_program
-from configs.settings import base_directory
+from configs.settings import base_directory, start_frame
 from OpenGL.GL import *
 import pygame
 
@@ -11,7 +11,7 @@ import pygame
 class PointCloudController:
     def __init__(self, **kwargs):
         self.velo_path = os.path.join(base_directory, "velodyne_points", "source")
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
         self.rotation_angles = (0,0,0)
         self.zoom_factor = 1.0
         self.vbo = None
@@ -34,10 +34,10 @@ class PointCloudController:
             if os.path.exists(file_path):
                 self.current_frame = next_frame
             
-            return scan.reshape((-1, 4))
+            return scan.reshape((-1, 4))[:, :4]  
         else:
             print(f"no data for point cloud at: {file_path}")
-            self.current_frame = "0000000000"
+            self.current_frame = start_frame
             return None
     
     def load_point_vbo(self, vertices):
@@ -70,6 +70,7 @@ class PointCloudController:
 
         if data is not None: 
             self.velo_range = range(0, data.shape[0], points_step)
+            
             self.vbo = self.load_point_vbo(data[self.velo_range, :-1])
         else:
             self.vbo = None

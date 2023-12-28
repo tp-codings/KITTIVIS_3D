@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from configs.settings import colors
+from configs.settings import colors, start_frame
 from utils.utilities import incrementString
 import pygame
 import json
@@ -11,7 +11,7 @@ class BoundingBoxControllerPredictRead:
         #hier Pfade anlegen
         self.tracklet_path = os.path.join("data", "Live", "tracklets", "data1")
 
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
         self.last_frame = ""
         self.tracklet_rects = None
         self.tracklet_types = None

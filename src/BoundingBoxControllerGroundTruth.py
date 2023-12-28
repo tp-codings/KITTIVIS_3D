@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from configs.settings import colors, base_directory
+from configs.settings import colors, base_directory, start_frame
 from utils.simulateData import simulate_tracklets
 from utils.utilities import incrementString
 import pygame
@@ -11,7 +11,7 @@ class BoundingBoxControllerGroundTruth:
         #hier Pfade anlegen
         self.tracklet_path = os.path.join(base_directory, "tracklets", "source")
 
-        self.current_frame = "0000000000"
+        self.current_frame = start_frame
         self.last_frame = ""
         self.tracklet_rects = None
         self.tracklet_types = None
@@ -62,7 +62,7 @@ class BoundingBoxControllerGroundTruth:
             print(f"no data for tracklet ground truth at: {file_path}")
             self.tracklet_rects = None
             self.tracklet_types = None            
-            self.current_frame = "0000000000"
+            self.current_frame = start_frame
 
 
               
