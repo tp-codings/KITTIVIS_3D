@@ -39,7 +39,7 @@ if __name__ == "__main__":
         print("Converting {} ...".format(scene_name))
 
         output_folder = os.path.join(sys.argv[2], scene_name)
-        velodyne_folder = os.path.join(output_folder, "velodyne/")
+        velodyne_folder = os.path.join(output_folder, "velodyne_points/", "data")
 
         first_lidar = nusc.get('sample', nusc.scene[name2id[scene_name]]["first_sample_token"])["data"]["LIDAR_TOP"]
         last_lidar = nusc.get('sample', nusc.scene[name2id[scene_name]]["last_sample_token"])["data"]["LIDAR_TOP"]
@@ -72,10 +72,10 @@ if __name__ == "__main__":
             min_remission = np.min(points[:, 3])
             points[:, 3] = (points[:, 3] - min_remission)  / (max_remission - min_remission)
             
-            output_filename = os.path.join(velodyne_folder, "{:05d}.bin".format(len(lidar_filenames)))
+            output_filename = os.path.join(velodyne_folder, "{:010d}.bin".format(len(lidar_filenames)))
             points.tofile(output_filename)
 
-            original.append(("{:05d}.bin".format(len(lidar_filenames)), lidar_data["filename"]))
+            original.append(("{:010d}.bin".format(len(lidar_filenames)), lidar_data["filename"]))
             
             poses.append(pose)
             lidar_filenames.append(os.path.join(dataroot, lidar_data["filename"]))
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         original_file.close()
 
         # copy images to folder.
-        image_folder = os.path.join(output_folder, "image_2/")
+        image_folder = os.path.join(output_folder, "image_2/", "data")
 
         first_image = nusc.get('sample', nusc.scene[name2id[scene_name]]["first_sample_token"])["data"]["CAM_FRONT"]
 

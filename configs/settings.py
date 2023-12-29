@@ -11,11 +11,13 @@ colors = {
     'misc' : (0.0, 0.4, 1.0)
 }
 
-min_tresh = 0.6
+min_tresh = 0.3
 
-start_frame = "00000"
 
-_seq = "data/kitti/0051"
+
+start_frame = "0000000000"
+
+_seq = "data/nuscenes/scene-0103"
 
 ckpt = "pillar_logs/checkpoints/PP_MOF_160.pth"
 
