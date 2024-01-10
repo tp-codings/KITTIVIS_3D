@@ -18,7 +18,7 @@ if __name__ == "__main__":
     dataroot = sys.argv[1]
 
 
-    nusc = NuScenes(dataroot = dataroot, verbose = True)
+    nusc = NuScenes(dataroot = dataroot, verbose = True, version="v1.0-trainval")
 
     name2id = {scene["name"]:id for id, scene in enumerate(nusc.scene)}
 

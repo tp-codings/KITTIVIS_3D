@@ -55,13 +55,13 @@ from nuscenes.utils.splits import create_splits_logs
 
 class KittiConverter:
     def __init__(self,
-                 nusc_kitti_dir: str = r'E:\ML_Datasets\nuScenes\Mini\anns',
+                 nusc_kitti_dir: str = r'E:\ML_Datasets\nuScenes\Test\blablabla',
                  cam_name: str = 'CAM_FRONT',
                  lidar_name: str = 'LIDAR_TOP',
                  image_count: int = 10,
-                 nusc_version: str = 'v1.0-mini',
-                 split: str = 'mini_val',
-                 dataroot: str = r'E:\ML_Datasets\nuScenes\Mini\v1.0-mini'):
+                 nusc_version: str = 'v1.0-trainval',
+                 split: str = 'train',
+                 dataroot: str = r'E:\ML_Datasets\nuScenes\Test\v1.0-trainval01_blobs_lidar'):
         """
         :param nusc_kitti_dir: Where to write the KITTI-style annotations.
         :param cam_name: Name of the camera to export. Note that only one camera is allowed in KITTI.
@@ -173,8 +173,22 @@ class KittiConverter:
             src_lid_path = os.path.join(self.nusc.dataroot, filename_lid_full)
             dst_lid_path = os.path.join(lidar_folder, sample_token + '.bin')
             assert not dst_lid_path.endswith('.pcd.bin')
+
             pcl = LidarPointCloud.from_file(src_lid_path)
             pcl.rotate(kitti_to_nu_lidar_inv.rotation_matrix)  # In KITTI lidar frame.
+            
+            #this is better conversion to kitti
+            #scan = np.fromfile(src_lid_path, dtype=np.float32)
+            #points = scan.reshape((-1, 5))[:, :4]
+
+            # ensure that remission is in [0,1]
+            #max_remission = np.max(points[:, 3])
+            #min_remission = np.min(points[:, 3])
+            #points[:, 3] = (points[:, 3] - min_remission)  / (max_remission - min_remission)
+            
+            #output_filename = os.path.join(velodyne_folder, "{:010d}.bin".format(len(lidar_filenames)))
+            #points.tofile(dst_lid_path)
+
             with open(dst_lid_path, "w") as lid_file:
                 pcl.points.T.tofile(lid_file)
 

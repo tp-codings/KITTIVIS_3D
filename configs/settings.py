@@ -13,11 +13,12 @@ colors = {
 
 min_tresh = 0.3
 
-
+#0000000000
+#000000
 
 start_frame = "0000000000"
 
-_seq = "data/nuscenes/scene-0103"
+_seq = "data/source"
 
 ckpt = "pillar_logs/checkpoints/PP_MOF_160.pth"
 

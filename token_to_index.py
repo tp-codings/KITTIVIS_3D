@@ -24,5 +24,5 @@ def rename_files_in_folder(folder_path):
     print(f"{counter} Dateien wurden umbenannt.")
 
 # Pfad zum Ordner angeben
-folder_path = r"E:\ML_Datasets\nuScenes\Mini\anns\testing\image_2"
+folder_path = r"E:\ML_Datasets\nuScenes\Test\lalala\val\calib"
 rename_files_in_folder(folder_path)
