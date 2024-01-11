@@ -46,7 +46,6 @@ def init():
     connectionRenderer = ConnectionRenderer()
 
 
-
 def update():
     global stop
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()

@@ -33,8 +33,15 @@ def check_folders_existence(cam_paths, oxts_path, tracklets_path, velodyne_path)
 
     return existence
 
+def convert_to_source_directory(base_path):
+    base_path_split = os.path.split(base_path)
+    new_base_path = os.path.join(*base_path_split[:-2], "data", "source", base_path_split[-1])
+    return new_base_path
+
 def copy_file(base_path, current_frame, ending, filter = "data"):
-    target_path = os.path.join(base_path, "source")
+
+    new_base_path = convert_to_source_directory(base_path)
+    target_path = os.path.join(new_base_path, "source")
     if not os.path.exists(target_path):
         os.makedirs(target_path)
 
@@ -53,22 +60,26 @@ def on_exit(signum, frame):
     add_output("Program ended. Cleaning up data...")
 
     for cam_path in cam_paths:
-        file_path = os.path.join(cam_path, "source")
+        new_cam_path = convert_to_source_directory(cam_path)
+        file_path = os.path.join(new_cam_path, "source")
         if os.path.exists(file_path):
             shutil.rmtree(file_path)
             add_output(f"Data at {file_path} has been deleted.")
 
-    file_path = os.path.join(oxts_path, "source")
+    new_oxts_path = convert_to_source_directory(oxts_path)
+    file_path = os.path.join(new_oxts_path, "source")
     if os.path.exists(file_path):
         shutil.rmtree(file_path)
         add_output(f"Data at {file_path} has been deleted.")
 
-    file_path = os.path.join(tracklets_path, "source")
+    new_tracklets_path = convert_to_source_directory(tracklets_path)
+    file_path = os.path.join(new_tracklets_path, "source")
     if os.path.exists(file_path):
         shutil.rmtree(file_path)
         add_output(f"Data at {file_path} has been deleted.")
 
-    file_path = os.path.join(velodyne_path, "source")
+    new_velodyne_path = convert_to_source_directory(velodyne_path)
+    file_path = os.path.join(new_velodyne_path, "source")
     if os.path.exists(file_path):
         shutil.rmtree(file_path)
         add_output(f"Data at {file_path} has been deleted.")
