@@ -55,13 +55,13 @@ from nuscenes.utils.splits import create_splits_logs
 
 class KittiConverter:
     def __init__(self,
-                 nusc_kitti_dir: str = r'E:\ML_Datasets\nuScenes\Test\blablabla',
+                 nusc_kitti_dir: str = r'E:\ML_Datasets\nuScenes\Test\lastHope',
                  cam_name: str = 'CAM_FRONT',
                  lidar_name: str = 'LIDAR_TOP',
                  image_count: int = 10,
-                 nusc_version: str = 'v1.0-trainval',
-                 split: str = 'train',
-                 dataroot: str = r'E:\ML_Datasets\nuScenes\Test\v1.0-trainval01_blobs_lidar'):
+                 nusc_version: str = 'v1.0-test',
+                 split: str = 'test',
+                 dataroot: str = r'E:\ML_Datasets\nuScenes\Test\v1.0-test_blobs'):
         """
         :param nusc_kitti_dir: Where to write the KITTI-style annotations.
         :param cam_name: Name of the camera to export. Note that only one camera is allowed in KITTI.

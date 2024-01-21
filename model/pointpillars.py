@@ -229,6 +229,14 @@ class PointPillars(nn.Module):
                                 |/   o   |/    
                                 3 ------ 0 
         x: front, y: left, z: top
+
+  6 ------ 5
+ / |      /|
+2 -|---- 1 |   
+|  |     | | 
+| 7 -----| 4
+|/   o   |/    
+3 ------ 0 
     '''
 
     def __init__(self,
@@ -384,6 +392,7 @@ class PointPillars(nn.Module):
                                                       bbox_dir_cls_pred=bbox_dir_cls_pred[i], 
                                                       anchors=batched_anchors[i])
             results.append(result)
+        #print(results)
         return results
 
     def forward(self, batched_pts, mode='test', batched_gt_bboxes=None, batched_gt_labels=None):

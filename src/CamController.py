@@ -74,7 +74,7 @@ class CamController:
         self.get_data()
         for i in range(len(self.cams)):
             if self.cams[i] is not None:
-                self.perform_yolo_detection(i)
+                #self.perform_yolo_detection(i)
                 self.load_texture(i)
 
     def render(self, scale=0.5):

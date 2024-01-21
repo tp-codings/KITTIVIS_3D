@@ -4,6 +4,7 @@ import numpy as np
 import os
 import torch
 import pdb
+import time
 
 from utils import setup_seed, read_points, read_calib, read_label, \
     keep_bbox_from_image_range, keep_bbox_from_lidar_range, vis_pc, \
@@ -72,6 +73,7 @@ def main(args):
         
         result_filter = model(batched_pts=[pc_torch], 
                               mode='test')[0]
+        
     if calib_info is not None and img is not None:
         tr_velo_to_cam = calib_info['Tr_velo_to_cam'].astype(np.float32)
         r0_rect = calib_info['R0_rect'].astype(np.float32)
@@ -83,7 +85,6 @@ def main(args):
     result_filter = keep_bbox_from_lidar_range(result_filter, pcd_limit_range)
     lidar_bboxes = result_filter['lidar_bboxes']
     labels, scores = result_filter['labels'], result_filter['scores']
-    print(lidar_bboxes)
 
 
     vis_pc(pc, bboxes=lidar_bboxes, labels=labels)

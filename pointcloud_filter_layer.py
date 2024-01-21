@@ -14,13 +14,13 @@ def calculate_angle(z, xy):
     """Berechnet den vertikalen Winkel des Punktes."""
     return np.arctan2(z, xy) * 180 / np.pi
 
-def filter_layers(points, step, num_layers=16):
+def filter_layers(points, step, num_layers=64):
     """Entfernt jeden 'step'-ten Layer aus der Punktwolke."""
     xy_distances = np.sqrt(points[:, 0]**2 + points[:, 1]**2)
     angles = calculate_angle(points[:, 2], xy_distances)
 
-    # Klassifizieren der Winkel in Bins, die den Layern entsprechen
-    bins = np.linspace(-90, 90, num=num_layers+1)
+    # Klassifizieren der Winkel in Bins, die den Layern entsprechen (64 Layer im Winkel von -24.8 bis +2 (siehe Datenblatt https://hypertech.co.il/wp-content/uploads/2015/12/HDL-64E-Data-Sheet.pdf))
+    bins = np.linspace(-24.8, 2, num=num_layers+1)
     layer_indices = np.digitize(angles, bins) - 1
 
     # Filtern der Layer

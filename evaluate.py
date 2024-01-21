@@ -4,6 +4,7 @@ import os
 import torch
 import pdb
 from tqdm import tqdm
+import time
 
 from utils import setup_seed, keep_bbox_from_image_range, \
     keep_bbox_from_lidar_range, write_pickle, write_label, \
@@ -33,7 +34,7 @@ def get_score_thresholds(tp_scores, total_num_valid_gt, num_sample_pts=41):
     return score_thresholds
 
 
-def do_eval(det_results, gt_results, CLASSES, saved_path):
+def do_eval(det_results, gt_results, CLASSES, saved_path, inference_times):
     '''
     det_results: list,
     gt_results: dict(id -> det_results)
@@ -273,6 +274,10 @@ def do_eval(det_results, gt_results, CLASSES, saved_path):
     for k, v in overall_results.items():
         print(f'{k} AP: {v[0]:.4f} {v[1]:.4f} {v[2]:.4f}')
         print(f'{k} AP: {v[0]:.4f} {v[1]:.4f} {v[2]:.4f}', file=f)
+
+
+    average_time = sum(inference_times)/len(inference_times)
+    print(f"Durchschnittliche Inferenzgeschwindigkeit: {round((average_time)*1000, 2)} ms")
     f.close()
     
 
@@ -301,6 +306,8 @@ def main(args):
 
     pcd_limit_range = np.array([0, -40, -3, 70.4, 40, 0.0], dtype=np.float32)
 
+
+    inference_times = []
     model.eval()
     with torch.no_grad():
         format_results = {}
@@ -317,10 +324,13 @@ def main(args):
             batched_gt_bboxes = data_dict['batched_gt_bboxes']
             batched_labels = data_dict['batched_labels']
             batched_difficulty = data_dict['batched_difficulty']
+            start_time = time.time()
             batch_results = model(batched_pts=batched_pts, 
                                   mode='val',
                                   batched_gt_bboxes=batched_gt_bboxes, 
                                   batched_gt_labels=batched_labels)
+            end_time = time.time()
+            inference_times.append(end_time-start_time)
             # pdb.set_trace()
             for j, result in enumerate(batch_results):
                 format_result = {
@@ -368,7 +378,7 @@ def main(args):
         write_pickle(format_results, os.path.join(saved_path, 'results.pkl'))
     
     print('Evaluating.. Please wait several seconds.')
-    do_eval(format_results, val_dataset.data_infos, CLASSES, saved_path)
+    do_eval(format_results, val_dataset.data_infos, CLASSES, saved_path, inference_times)
 
 
 if __name__ == '__main__':

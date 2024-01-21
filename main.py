@@ -7,7 +7,7 @@ import pygame
 from src.PointCloudController import PointCloudController
 from src.CamController import CamController
 from src.InputController import InputController
-from src.TextController import TextController
+from src.TextRenderer import TextRenderer
 from src.GeoController import GeoController
 from src.BoundingBoxControllerGroundTruth import BoundingBoxControllerGroundTruth
 from src.BoundingBoxControllerPredictRead import BoundingBoxControllerPredictRead
@@ -17,7 +17,7 @@ from src.ConnectionRenderer import ConnectionRenderer
 import numpy as np
 
 def init():
-    global inputController, pointCloudController, camController, textController, geoController, boundingBoxControllerGroundTruth, boundingBoxControllerPredict, pointPillarsPredictionTest, connectionRenderer, stop, clock
+    global inputController, pointCloudController, camController, textRenderer, geoController, boundingBoxControllerGroundTruth, boundingBoxControllerPredict, pointPillarsPredictionTest, connectionRenderer, stop, clock
     display = (800, 800)
     stop = False
     pygame.init()
@@ -35,7 +35,7 @@ def init():
     pointCloudController = PointCloudController()
     camController = CamController(display)
     inputController = InputController()
-    textController = TextController()
+    textRenderer = TextRenderer()
 
     boundingBoxControllerGroundTruth = BoundingBoxControllerGroundTruth()
 
@@ -49,22 +49,23 @@ def init():
 def update():
     global stop
     stop, initial_mouse_pos, zoom_factor, dragging = inputController.update()
+
     #camController.update()
+
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
 
     #boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
-
     #boundingBoxControllerPredict.update(initial_mouse_pos, zoom_factor, dragging)
 
     pointPillarsPredictionTest.update(initial_mouse_pos, zoom_factor, dragging)
 
     latitude, longitude, height = geoController.update()
     fps = clock.get_fps()
-    textController.update(str(round(fps, 2)), str(round(latitude, 6)), str(round(longitude, 6)), str(round(height, 2)), str(pointCloudController.get_point_count()))
+    textRenderer.update(str(round(fps, 2)), str(round(latitude, 6)), str(round(longitude, 6)), str(round(height, 2)), str(pointCloudController.get_point_count()))
 
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 0, *boundingBoxControllerGroundTruth.get())
     #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *boundingBoxControllerPredict.get())
-    connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *pointPillarsPredictionTest.get())
+    #connectionRenderer.update(initial_mouse_pos, zoom_factor, dragging, 1, *pointPillarsPredictionTest.get())
 
 
 
@@ -73,8 +74,10 @@ def render():
     projection = glGetFloatv(GL_PROJECTION_MATRIX)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glClearColor(0.0, 0.0, 0.0, 1.0)
+
     pointCloudController.render(projection)
-    textController.render()
+    textRenderer.render()
+    
     #boundingBoxControllerGroundTruth.render()
 
     #boundingBoxControllerPredict.render()
@@ -82,7 +85,8 @@ def render():
     pointPillarsPredictionTest.render()
 
     #camController.render()
-    connectionRenderer.render()
+    ##connectionRenderer.render()
+
     pygame.display.flip()
 
 if __name__ == "__main__":

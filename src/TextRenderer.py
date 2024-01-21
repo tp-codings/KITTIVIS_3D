@@ -1,7 +1,7 @@
 from pygame import font, image
 from OpenGL.GL import *
 
-class TextController:
+class TextRenderer:
     def __init__(self):
         self.font = font.SysFont('arial', 20)
         self.fps = 0

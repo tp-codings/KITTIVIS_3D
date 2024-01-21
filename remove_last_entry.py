@@ -20,5 +20,5 @@ def remove_last_entry_from_files(folder_path):
                 file.write('\n'.join(modified_lines))
 
 # Beispiel: Ordnerpfad anpassen
-folder_path = r"E:\ML_Datasets\nuScenes\Test\reicht\training\label_2"
+folder_path = r"E:\ML_Datasets\nuScenes\Test\lastHope\training\label_2"
 remove_last_entry_from_files(folder_path)
