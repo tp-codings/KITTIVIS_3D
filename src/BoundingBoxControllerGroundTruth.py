@@ -1,5 +1,6 @@
 from OpenGL.GL import *
-from configs.settings import colors, base_directory, start_frame
+from configs.settings import base_directory, start_frame
+from configs.settings import colors_gt as colors
 from utils.simulateData import simulate_tracklets
 from utils.utilities import incrementString
 import pygame

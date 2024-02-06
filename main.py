@@ -54,7 +54,8 @@ def update():
 
     pointCloudController.update(initial_mouse_pos, zoom_factor, dragging)
 
-    #boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
+    boundingBoxControllerGroundTruth.update(initial_mouse_pos, zoom_factor, dragging)
+
     #boundingBoxControllerPredict.update(initial_mouse_pos, zoom_factor, dragging)
 
     pointPillarsPredictionTest.update(initial_mouse_pos, zoom_factor, dragging)
@@ -78,14 +79,14 @@ def render():
     pointCloudController.render(projection)
     textRenderer.render()
     
-    #boundingBoxControllerGroundTruth.render()
+    boundingBoxControllerGroundTruth.render()
 
     #boundingBoxControllerPredict.render()
 
     pointPillarsPredictionTest.render()
 
     #camController.render()
-    ##connectionRenderer.render()
+    #connectionRenderer.render()
 
     pygame.display.flip()
 

@@ -11,7 +11,7 @@ data = {
     "Car_Hard": [74.17, 66.73, 58.64, 68.53, 68.31, 68.46, 68.82]
 }
 
-data_MOF_MSF = {
+data_trans = {
     "Transfer": [
         "MOF -> POF", "MOF -> PSF", "MOF -> PLF",
         "MSF -> POF", "MSF -> PSF", "MLF -> POF", "MLF -> PLF"
@@ -25,4 +25,17 @@ data_MOF_MSF = {
     "Car_Easy": [86.64, 83.67, 83.10, 83.19, 84.46, 84.12, 84.37],
     "Car_Moderate": [76.75, 68.67, 66.45, 74.49, 73.67, 75.00, 76.34],
     "Car_Hard": [74.17, 66.73, 58.64, 68.53, 68.31, 68.46, 68.82]
+}
+
+data_overview = {
+    'Method': ['MOF -> PSF', 'MOF -> PLF', 'VoxelNet', 'PointPillars'],
+    'Pedestrian_Easy': [42.44, 39.48, 39.48, 51.45],
+    'Pedestrian_Moderate': [39.05, 37.56, 33.69, 41.92],
+    'Pedestrian_Hard': [35.05, 33.59, 31.51, 38.89],
+    'Cyclist_Easy': [73.02, 74.19, 61.22, 77.10],
+    'Cyclist_Moderate': [53.43, 52.89, 48.36, 58.65],
+    'Cyclist_Hard': [50.19, 49.37, 44.37, 51.92],
+    'Car_Easy': [83.67, 83.10, 77.47, 82.58],
+    'Car_Moderate': [68.67, 66.45, 65.11, 74.31],
+    'Car_Hard': [66.73, 58.64, 57.73, 68.99]
 }

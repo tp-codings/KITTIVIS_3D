@@ -33,7 +33,8 @@ class GeoController:
             self.latitude = -1
             self.longitude = -1
             self.height = -1
-       
+            self.current_frame = start_frame
+
 
     def update(self):
         self.get_data()

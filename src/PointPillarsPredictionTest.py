@@ -50,11 +50,8 @@ class PointPillarsPredictionTest:
         with torch.no_grad():
             pc_torch = pc_torch.cuda()
             
-            start_time = time.time()
             result_filter = self.model(batched_pts=[pc_torch], 
                                 mode='test')[0]
-            end_time = time.time()
-            print(f"Zeit für die forward-Methode: {round((end_time - start_time)*1000, 2)} ms")
 
         #result_filter = keep_bbox_from_lidar_range(result_filter, self.pcd_limit_range)
         #print(result_filter)

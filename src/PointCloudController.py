@@ -91,7 +91,7 @@ class PointCloudController:
             modelviewprojection = glGetFloatv(GL_MODELVIEW_MATRIX)
             glUniformMatrix4fv(modelviewprojection_loc, 1, GL_FALSE, np.dot(projection, modelviewprojection))
 
-            glPointSize(3.5)
+            glPointSize(1.5)
 
             glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
             glVertexPointer(3, GL_FLOAT, 0, None)
