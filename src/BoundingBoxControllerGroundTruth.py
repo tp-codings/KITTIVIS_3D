@@ -9,20 +9,18 @@ import numpy as np
 
 class BoundingBoxControllerGroundTruth:
     def __init__(self):
-        #hier Pfade anlegen
         self.tracklet_path = os.path.join(base_directory, "tracklets", "source")
-
         self.current_frame = start_frame
         self.last_frame = ""
         self.tracklet_rects = None
         self.tracklet_types = None
-
         self.initial_mouse_pos = None
         self.zoom_factor = 1.0
         self.dragging = False
         self.rotation_angles = (0,0,0)
 
     def parse_tracklets_data(self, file_path):
+        #Formats tracklet data for further processing
         with open(file_path, 'r') as file:
             quader_data = file.readlines()
 
@@ -51,6 +49,7 @@ class BoundingBoxControllerGroundTruth:
     def get_tracklets(self):
         #self.tracklet_rects, self.tracklet_types = simulate_tracklets()  
 
+        #Reads tracklets-files and calculates next frame
         file_path = os.path.join(self.tracklet_path, self.current_frame + ".txt")
 
         if os.path.exists(file_path):
@@ -65,9 +64,8 @@ class BoundingBoxControllerGroundTruth:
             self.tracklet_types = None            
             self.current_frame = start_frame
 
-
-              
     def rotate_scene(self, angle_x, angle_y, angle_z):
+        #Rotates scene according to user input
         glRotatef(angle_x, 1, 0, 0)
         glRotatef(angle_y, 0, 1, 0)
         glRotatef(angle_z, 0, 0, 1)
@@ -76,7 +74,8 @@ class BoundingBoxControllerGroundTruth:
         self.initial_mouse_pos = initial_mouse_pos
         self.zoom_factor = zoom_factor
         self.dragging = dragging
-        
+
+        #Calculates rotation angle according to user input
         if dragging:
             rel_x, rel_y = pygame.mouse.get_pos()[0] - initial_mouse_pos[0], pygame.mouse.get_pos()[1] - initial_mouse_pos[1]
             self.rotation_angles = (
@@ -93,12 +92,15 @@ class BoundingBoxControllerGroundTruth:
                 self.render_3d_bounding_box(t_rects, axes=[0, 1, 2], color=colors.get(t_type.lower(), (1.0, 1.0, 1.0)))          
 
     def render_3d_bounding_box(self, vertices, axes=[0, 1, 2], color=(0, 0, 0)):
+        #Render bounding boxes with color according to type
+
         vertices = vertices[axes, :]
         connections = [
             [0, 1], [1, 2], [2, 3], [3, 0],
             [4, 5], [5, 6], [6, 7], [7, 4],
             [0, 4], [1, 5], [2, 6], [3, 7]
         ]
+
         glLineWidth(2.0)
         glPushMatrix()
         scale = 10

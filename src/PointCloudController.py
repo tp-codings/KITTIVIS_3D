@@ -1,3 +1,4 @@
+#reads and renders pointclouds
 import os
 import numpy as np
 from utils.utilities import incrementString
@@ -25,7 +26,7 @@ class PointCloudController:
     def get_data(self):
         file_path = os.path.join(self.velo_path, self.current_frame + ".bin")
 
-        # Überprüfen Sie, ob der Pfad existiert, bevor Sie die Datei laden
+        #Reads .bin file for current frame and updates frame
         if os.path.exists(file_path):
             scan = np.fromfile(file_path, dtype=np.float32)
             next_frame = incrementString(self.current_frame)
@@ -41,6 +42,7 @@ class PointCloudController:
             return None
     
     def load_point_vbo(self, vertices):
+        #VBO initialisation
         vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, vbo)
         glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
@@ -48,12 +50,15 @@ class PointCloudController:
         return vbo
 
     def rotate_scene(self, angle_x, angle_y, angle_z):
+        #Rotates scene according to user input
         glRotatef(angle_x, 1, 0, 0)
         glRotatef(angle_y, 0, 1, 0)
         glRotatef(angle_z, 0, 0, 1)
 
     def update(self, initial_mouse_pos, zoom_factor, dragging):
         self.zoom_factor = zoom_factor
+
+        #Calculates rotation angle according to user input
         if dragging:
             rel_x, rel_y = pygame.mouse.get_pos()[0] - initial_mouse_pos[0], pygame.mouse.get_pos()[1] - initial_mouse_pos[1]
             self.rotation_angles = (
@@ -63,8 +68,8 @@ class PointCloudController:
             )
 
         points_step = int(1. / 1.)
-
         data = self.get_data()
+
         if data is not None:
             self.len_data = len(data)
 
@@ -78,25 +83,23 @@ class PointCloudController:
 
     def render(self, projection):
         if self.vbo is not None:
+            #Calculates view-matrix -> shader
             glPushMatrix()
             scale = 10
             glScalef(scale, scale, scale)
             glTranslatef(0.0, 0.0, -70 * self.zoom_factor)
             self.rotate_scene(*self.rotation_angles)
-
-            # Berechne die Model-View-Projection-Matrix und übergebe sie an den Shader
             glUseProgram(self.shader_program)
             
             modelviewprojection_loc = glGetUniformLocation(self.shader_program, "modelviewprojection")
             modelviewprojection = glGetFloatv(GL_MODELVIEW_MATRIX)
             glUniformMatrix4fv(modelviewprojection_loc, 1, GL_FALSE, np.dot(projection, modelviewprojection))
 
+            #Render pointcloud with shader 
             glPointSize(1.5)
-
             glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
             glVertexPointer(3, GL_FLOAT, 0, None)
             glEnableClientState(GL_VERTEX_ARRAY)
-
             glDrawArrays(GL_POINTS, 0, len(self.velo_range))
 
             glDisableClientState(GL_VERTEX_ARRAY)

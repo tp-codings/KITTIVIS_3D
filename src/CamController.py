@@ -13,17 +13,12 @@ class CamController:
 
     def __init__(self, display):
         self.cam_paths = [os.path.join(base_directory, f"image_{i:02d}", "source") for i in range(3, 4)]
-
         self.current_frame = start_frame
-
         self.cams = [None for x in range(len(self.cam_paths))]
         self.texture_ids = [None for x in range(len(self.cam_paths))]
-
         self.positions = [(50, display[1] / 2-5)] #hier obacht
-
         self.model = YOLO("YoloWeights/yolov8n.pt")
         self.classNames = self.model.names
-
         self.detections = []
         print("Cuda Available: ", torch.cuda.is_available())
 
