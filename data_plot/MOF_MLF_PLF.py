@@ -26,9 +26,9 @@ difficulty_levels = ['Easy', 'Moderate', 'Hard']
 
 percentage_diff_df = pd.DataFrame({
     category: {
-        'Easy': data[category]['MOF -> POF'][0] - data[category]['MOF -> PLF'][0],
-        'Moderate': data[category]['MOF -> POF'][1] - data[category]['MOF -> PLF'][1],
-        'Hard': data[category]['MOF -> POF'][2] - data[category]['MOF -> PLF'][2]
+        'Easy': 100 * (data[category]['MOF -> POF'][0] - data[category]['MOF -> PLF'][0]) / data[category]['MOF -> PLF'][0],
+        'Moderate': 100 * (data[category]['MOF -> POF'][1] - data[category]['MOF -> PLF'][1]) / data[category]['MOF -> PLF'][1],
+        'Hard': 100 * (data[category]['MOF -> POF'][2] - data[category]['MOF -> PLF'][2]) / data[category]['MOF -> PLF'][2]
     } for category in data
 }).T
 
