@@ -9,7 +9,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 data/kitti/*
-data/nuscenes/*
 build/
 develop-eggs/
 dist/
