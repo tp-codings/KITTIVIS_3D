@@ -8,8 +8,9 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-data/kitti/*
 build/
+data/kitti/0071
+data/kitti/0091
 develop-eggs/
 dist/
 downloads/
