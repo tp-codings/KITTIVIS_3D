@@ -55,12 +55,12 @@ In /configs/settings.py, you can set the path to the checkpoint file to be used 
 This script simulates the provisioning of sensor data using a simple copy procedure.
 
 ### Parameter
-  -h, --help                   show this help message and exit
-  --folder_path FOLDER_PATH:   Path to data folder
-  --time_step TIME_STEP:       Time step between frames -> simulates operation speed of sensor
-  --mode MODE:                 "FPF" (Frame Per Frame) -> manual iteration (by pressing space) or "default" -> automatic iteration
-  --filter FILTER:             Option for selecting folder with filtered pointcloud
-Examples
+- `-h, --help`:                  Show this help message and exit.
+- `--folder_path FOLDER_PATH`:   Path to the data folder.
+- `--time_step TIME_STEP`:       Time step between frames, simulating the operation speed of the sensor.
+- `--mode MODE`:                 "FPF" (Frame Per Frame) for manual iteration (by pressing space) or "default" for automatic iteration.
+- `--filter FILTER`:             Option for selecting a folder with filtered point cloud -> The folder should be located in the same directory as the other lidar data. Its name is defined in the script pointcloud_filter_sys or pointcloud_filter_layer and is either "data_sys_reduced_x{value}" or "data_layer_reduced_x{value}".  Default is "data" for no filtering.
+
 
 
 # Examples
