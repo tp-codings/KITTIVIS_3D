@@ -1,4 +1,4 @@
-# KITTIVIS_3D
+# KITTIVIS_3D: Visualization of LiDAR-Based 3D-Object detection with PointPillars
 This is a prototype for an interactive LiDAR visualization tool for primary KITTI scene data (protoype for nuScenes data included aswell). It should also serve as the basis for the development of a live-on-board system. An 3D object detection was implemented based on the PointPillars method.
 
 ## Features
@@ -55,7 +55,7 @@ In /configs/settings.py, you can set the path to the checkpoint file to be used 
 ## Data simulation: simulate_data.py
 This script simulates the provisioning of sensor data using a simple copy procedure (img0-3, oxts, tracklets, velodyne_points).
 
-### Parameter
+### Parameters
 - `-h, --help`:                  Show this help message and exit.
 - `--folder_path FOLDER_PATH`:   Path to the data folder.
 - `--time_step TIME_STEP`:       Time step between frames in seconds, simulating the operation speed of the sensor (default 1s) .
@@ -78,7 +78,7 @@ You should download the "synced+rectified data" (senor data), "calibration" (sen
 ## Extracting tracklets frame per frame: extract_per_frame_tracklets.py
 The annotations of the ground-truth data are stored in a single large tracklets.xml file. These annotations need to be extracted frame by frame and tagged with the corresponding frame-specific indices. This task is handled by the script extract_per_frame_tracklets.py.
 
-### Parameter
+### Parameters
 - `-h, --help`:               Show this help message and exit.
 - `--n_frames N_FRAMES`:      Number of frames in the dataset.
 - `--xml_path XML_PATH`:      Path to the tracklets XML.
@@ -125,7 +125,7 @@ The second method reduces based on the layers or beams of the LiDAR scanner. In 
 ## Systematic filtering: pointcloud_filter_sys.py
 This script deletes all points except every x-th point from the point cloud. It stores the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
 
-## Parameter
+## Parameters
 - `-h, --help`:                    Show this help message and exit.
 - `--input_folder INPUT_FOLDER`:   Path to the input folder.
 - `--step STEP`:                   Filtering level (every x-th point will be retained) -> default: 2.
@@ -138,7 +138,7 @@ This script deletes all points except every x-th point from the point cloud. It 
 ## Layer filtering: pointcloud_filter_layer.py
 This script deletes every x-th layer from the point cloud. It stores the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
 
-## Parameter
+## Parameters
 - `-h, --help`:                    Show this help message and exit.
 - `--input_folder INPUT_FOLDER`:   Path to the input folder.
 - `--step STEP`:                   Filtering level (every x-th layer will be deleted) -> default: 2.
@@ -186,6 +186,17 @@ Once downloaded, the folder structure should be set up as follows:
             ├── [x.txt]
             └── ...
 ```
+
+## Preparing data for training: pre_process_kitti.py
+**Note:** The following scripts are from [zhulf0804](https://github.com/zhulf0804/PointPillars) who has implemented the PointPillars method in python with PyTorch. He used a different Numpy version than I did which might lead to issues. 
+To resolve this, you can either adjust the Numpy version and make the necessary modifications in the code, or create a new Conda environment based on the PointPillars implementation being used (recommended), which includes the appropriate dependencies for training.
+The script pre_process_kitti.py is responsible for creating an annotation database, which is used for comparison in the training process and for the creation of Train-Val-split.
+
+### Parameters
+- `-h, --help`: Show this help message and exit.
+- `--data_root DATA_ROOT`: Your data root for KITTI.
+- `--prefix PREFIX`: The prefix name for the saved .pkl file.
+
 
 # Open Issues
 
