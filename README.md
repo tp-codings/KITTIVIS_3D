@@ -31,9 +31,19 @@ This is a prototype for an interactive LiDAR visualization tool for primary KITT
 
 # Usage
 ## Main visualization tool: main.py
-The main.py is responsible for the interactive visualization of sensor data and the inference results of object detection. It contains the game loop, in which unnecessary components can be toggled on and off. No UI has been developed for this purpose, but it can easily be integrated into the architecture using various conditions triggered by potential buttons. This script only needs to be executed and has no additional parameters. The following image depicts the general architecture of the visualization tool:
+The main.py is responsible for the interactive visualization of sensor data and the inference results of object detection. It contains the game loop, in which unnecessary components can be toggled on and off. No UI has been developed for this purpose, but it can easily be integrated into the architecture using various conditions triggered by potential buttons. This script only needs to be executed and has no additional parameters. The following image depicts the general architecture of the visualization tool following the update-render-pattern known from video games:
 
 ![architecture](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/4eaba372-c658-408b-a3c9-d2d9561b5585)
+
+
+The application retrieves the data to be visualized from the directory /data/source/*. If no image is displayed, it means there are no data available in this directory. The data can be simulated using the script simulate_data.py (further described below).
+
+
+
+
+
+
+
 
 
 # Examples
@@ -42,8 +52,8 @@ The main.py is responsible for the interactive visualization of sensor data and 
 here nuScenes issue
 
 # Credits
-- Zhulf
-- typ für converter
+- Thanks to [zhulf0804](https://github.com/zhulf0804/PointPillars) for his implementation of PointPillars.
+- Thanks to []() for his nuScenes->Kitti converter. 
 
 # Contact Information
 
