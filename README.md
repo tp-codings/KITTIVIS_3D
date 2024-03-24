@@ -1,11 +1,11 @@
 # KITTIVIS_3D
-This is a interactive LiDAR visualization tool for KITTI data. An 3D object detection was implemented based on the PointPillars method.
-
+This is a prototype for an interactive LiDAR visualization tool for primary KITTI scene data (protoype for nuScenes data included aswell). It should also serve as the basis for the development of a live-on-board system. An 3D object detection was implemented based on the PointPillars method.
 
 ## Features
 - Real time interactive data visualization for sensor data in KITTI format
 - Real time 3D object detection
 - Converter for nuScenes -> KITTI (only for visualization)
+- Environment for training and evaluating models
   
 | Personal Rating | Year of Development | Languages | Tools | Type of Application |
 | --- | --- | --- | --- | --- |
@@ -30,13 +30,20 @@ This is a interactive LiDAR visualization tool for KITTI data. An 3D object dete
 `pip install -r requirements.txt`
 
 # Usage
-Description of Usage of individual modules.
+## Main visualization tool: main.py
+The main.py is responsible for the interactive visualization of sensor data and the inference results of object detection. It contains the game loop, in which unnecessary components can be toggled on and off. No UI has been developed for this purpose, but it can easily be integrated into the architecture using various conditions triggered by potential buttons. This script only needs to be executed and has no additional parameters. The following image depicts the general architecture of the visualization tool:
+
+![architecture](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/4eaba372-c658-408b-a3c9-d2d9561b5585)
+
 
 # Examples
 
 # Open Issues
 here nuScenes issue
 
+# Credits
+- Zhulf
+- typ für converter
 
 # Contact Information
 
