@@ -63,11 +63,58 @@ This script simulates the provisioning of sensor data using a simple copy proced
 - `--filter FILTER`:             Option for selecting a folder with filtered point cloud -> The folder should be located in the same directory as the other lidar data. Its name is defined in the script pointcloud_filter_sys or pointcloud_filter_layer and is either "data_sys_reduced_x{value}" or "data_layer_reduced_x{value}".  Default is "data" for no filtering.
 
 ### Examples
-`python simulate_data.py --folder_path "\data\kitti\0051" --time_step 0.1 --mode "FPF" --filter "data_layer_reduced_x2"`
-`python simulate_data.py --folder_path "\data\kitti\0051" --time_step 0.5 --filter "data_sys_reduced_x2"`
-`python simulate_data.py --folder_path "\data\nuscenes\scene-0001" --time_step 0.5"`
+- `python simulate_data.py --folder_path "\data\kitti\0051" --time_step 0.1 --mode "FPF" --filter "data_layer_reduced_x2"`
+- `python simulate_data.py --folder_path "\data\kitti\0051" --time_step 0.5 --filter "data_sys_reduced_x2"`
+- `python simulate_data.py --folder_path "\data\nuscenes\scene-0001" --time_step 0.5"`
 
+### Exiting the script
+Once the script is terminated (with Ctrl + c), a clean-up procedure is initiated, which deletes all simulated data. However, this only occurs if the script is terminated properly. For instance, if the terminal is closed, the data will remain. However, running and terminating the script again will delete the data once more.
 
+# Preparing data for visualization
+## Data source
+KITTI raw data can be downloaded [here](https://www.cvlibs.net/datasets/kitti/raw_data.php). You have to create an account to access the files. 
+You should download the "synced+rectified data" (senor data), "calibration" (sensor calibration information) and "tracklets" (annotation for ground-truth) from here.
+
+## Extracting tracklets frame per frame: extract_per_frame_tracklets.py
+The annotations of the ground-truth data are stored in a single large tracklets.xml file. These annotations need to be extracted frame by frame and tagged with the corresponding frame-specific indices. This task is handled by the script extract_per_frame_tracklets.py.
+
+### Parameter
+- `-h, --help`:               Show this help message and exit.
+- `--n_frames N_FRAMES`:      Number of frames in the dataset.
+- `--xml_path XML_PATH`:      Path to the tracklets XML.
+- `--output_dir OUTPUT_DIR`:  Directory to save the output text files.
+
+### Example
+- `python extract_per_frame_tracklets.py --n_frames 438 --xml_path "data/0091/tracklet_labels.xml" --output_dir "data/0091/tracklets"`
+  
+## KITTI data format
+After the extraction the folder structure should look similar to the following:
+.
+└── data/kitti/<scene>/
+    ├── image_00/
+    │   ├── [x.png]
+    │   └── ...
+    ├── image_01/
+    │   ├── [x.png]
+    │   └── ...
+    ├── image_02/
+    │   ├── [x.png]
+    │   └── ...
+    ├── image_03/
+    │   ├── [x.png]
+    │   └── ...
+    ├── oxts/
+    │   ├── [x.txt]
+    │   └── ...
+    ├── tracklets/
+    │   ├── [x.txt]
+    │   └── ...
+    ├── velodyne_points/
+    │   ├── [x.bin]
+    │   └── ...
+    └── <meta_data>.txt
+
+    
 
 
 
