@@ -38,6 +38,7 @@ This is a prototype for an interactive LiDAR visualization tool for primary KITT
 
 ## Main visualization tool: main.py
 The main.py is responsible for the interactive visualization of sensor data and the inference results of object detection. 
+It is capable of visualizing data following the KITTI format. In this repository, a snippet of a KITTI scene and a converted nuScenes scene are included for testing purposes.
 
 ### Architecture
 The application retrieves the data to be visualized from the directory /data/source/*. If no image is displayed, it means there are no data available in this directory. The data can be simulated using the script simulate_data.py (further described below).
@@ -52,14 +53,24 @@ The main.py contains the game loop, in which components can be toggled on and of
 In /configs/settings.py, you can set the path to the checkpoint file to be used for object detection.
 
 ## Data simulation: simulate_data.py
-This script simulates the provisioning of sensor data using a simple copy procedure.
+This script simulates the provisioning of sensor data using a simple copy procedure (img0-3, oxts, tracklets, velodyne_points).
 
 ### Parameter
 - `-h, --help`:                  Show this help message and exit.
 - `--folder_path FOLDER_PATH`:   Path to the data folder.
-- `--time_step TIME_STEP`:       Time step between frames, simulating the operation speed of the sensor.
+- `--time_step TIME_STEP`:       Time step between frames in seconds, simulating the operation speed of the sensor (default 1s) .
 - `--mode MODE`:                 "FPF" (Frame Per Frame) for manual iteration (by pressing space) or "default" for automatic iteration.
 - `--filter FILTER`:             Option for selecting a folder with filtered point cloud -> The folder should be located in the same directory as the other lidar data. Its name is defined in the script pointcloud_filter_sys or pointcloud_filter_layer and is either "data_sys_reduced_x{value}" or "data_layer_reduced_x{value}".  Default is "data" for no filtering.
+
+### Examples
+`python simulate_data.py --folder_path "\data\kitti\0051" --time_step 0.1 --mode "FPF" --filter "data_layer_reduced_x2"`
+`python simulate_data.py --folder_path "\data\kitti\0051" --time_step 0.5 --filter "data_sys_reduced_x2"`
+`python simulate_data.py --folder_path "\data\nuscenes\scene-0001" --time_step 0.5"`
+
+
+
+
+
 
 
 
