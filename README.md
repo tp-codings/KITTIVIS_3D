@@ -98,25 +98,25 @@ After the extraction the folder structure should look similar to the following:
 ```bash
 .
 └── data/kitti/<scene>/
-    ├── image_00/
+    ├── image_00/data/
     │   ├── [x.png]
     │   └── ...
-    ├── image_01/
+    ├── image_01/data/
     │   ├── [x.png]
     │   └── ...
-    ├── image_02/
+    ├── image_02/data/
     │   ├── [x.png]
     │   └── ...
-    ├── image_03/
+    ├── image_03/data/
     │   ├── [x.png]
     │   └── ...
-    ├── oxts/
+    ├── oxts/data/
     │   ├── [x.txt]
     │   └── ...
-    ├── tracklets/
+    ├── tracklets/data/
     │   ├── [x.txt]
     │   └── ...
-    ├── velodyne_points/
+    ├── velodyne_points/<data/data_reduced>/
     │   ├── [x.bin]
     │   └── ...
     └── <meta_data>.txt
@@ -281,7 +281,35 @@ In general, the tools are completely agnostic about the data source. Essentially
 For using KITTI scenes, the steps and instructions described above can be followed. If you want to use a different dataset like nuScenes or Waymo, it needs to be converted first. In this tool suite, a prototype procedure for using the nuScenes dataset is implemented. The following sections explain what can be done, how it's done, what cannot be done, and what problems still exist. Short form: Visualization and object detection in visualization tool works (no GT-Data), training and evaluating a model does not work.
 
 ## Preparing nuScenes data for visualization: nuscenes_kitti_converter.py
-This scripts converts 
+This script ([based on this](https://gist.github.com/jbehley/1f2a68cba1b1914bb8b23f2de08fc233)) extracts all scenes from the entire referenced dataset split and converts the associated data scene by scene into the KITTI format. It only supports the conversion of camera images and LiDAR data. The script cannot convert the ground-truth data, which is why they cannot be visualized. The folder structure looks as follows:
+
+```bash
+.
+└── data/nuscenes/scene-<scene_number>/
+    ├── image_2/data/
+    │   ├── [x.png]
+    │   └── ...
+    ├── velodyne_points/data/
+    │   ├── [x.bin]
+    │   └── ...
+    ├── calib.txt
+    ├── original.txt
+    ├── original_images_2.txt
+    └── poses.txt
+```
+
+### Parameters
+This script does not use argparser. The usage works as follows: 
+- `python nuscenes_kitti_converter.py <dataset_folder> <output_folder> [<scene_name>]`
+
+### Examples
+- `python nuscenes_kitti_converter.py {absolute path to nuscenes dataset split} "data/nuscenes"`
+
+
+
+
+
+
 
 # Open Issues
 
@@ -294,18 +322,23 @@ This is just a prototype, offering plenty of room for improvements and extension
 - Thanks to [jbehley](https://gist.github.com/jbehley/1f2a68cba1b1914bb8b23f2de08fc233) for his nuScenes -> Kitti converter.
 
 # Citation
+``` citation1
 @INPROCEEDINGS{Geiger2012CVPR,
   author = {Andreas Geiger and Philip Lenz and Raquel Urtasun},
   title = {Are we ready for Autonomous Driving? The KITTI Vision Benchmark Suite},
   booktitle = {Conference on Computer Vision and Pattern Recognition (CVPR)},
   year = {2012}
 }
+```
+```citation2
 @ARTICLE{Geiger2013IJRR,
   author = {Andreas Geiger and Philip Lenz and Christoph Stiller and Raquel Urtasun},
   title = {Vision meets Robotics: The KITTI Dataset},
   journal = {International Journal of Robotics Research (IJRR)},
   year = {2013}
 }
+```
+
 # Contact Information
 
 Feel free to reach out to me:
