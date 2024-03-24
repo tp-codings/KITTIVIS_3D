@@ -30,20 +30,37 @@ This is a prototype for an interactive LiDAR visualization tool for primary KITT
 `pip install -r requirements.txt`
 
 # Usage
+## Quick start
+1. `python main.py`
+2. `python simulate_data.py --folder_path "\data\kitti\0051 --time_step 0.1 --mode "default" --filter "data"`
+3. Use the left mouse button to rotate around the origin.
+4. Use the scroll wheel to zoom.
+
 ## Main visualization tool: main.py
-The main.py is responsible for the interactive visualization of sensor data and the inference results of object detection. It contains the game loop, in which unnecessary components can be toggled on and off. No UI has been developed for this purpose, but it can easily be integrated into the architecture using various conditions triggered by potential buttons. This script only needs to be executed and has no additional parameters. The following image depicts the general architecture of the visualization tool following the update-render-pattern known from video games:
+The main.py is responsible for the interactive visualization of sensor data and the inference results of object detection. 
+
+### Architecture
+The application retrieves the data to be visualized from the directory /data/source/*. If no image is displayed, it means there are no data available in this directory. The data can be simulated using the script simulate_data.py (further described below).
+The following image depicts the general architecture of the visualization tool following the update-render-pattern known from video games:
 
 ![architecture](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/4eaba372-c658-408b-a3c9-d2d9561b5585)
 
+### Toggle components
+The main.py contains the game loop, in which components can be toggled on and off by commenting. No UI has been developed for this purpose, but it can easily be integrated into the architecture using various conditions triggered by potential buttons. This script only needs to be executed and has no additional parameters. 
 
-The application retrieves the data to be visualized from the directory /data/source/*. If no image is displayed, it means there are no data available in this directory. The data can be simulated using the script simulate_data.py (further described below).
+### Change model for object detection
+In /configs/settings.py, you can set the path to the checkpoint file to be used for object detection.
 
+## Data simulation: simulate_data.py
+This script simulates the provisioning of sensor data using a simple copy procedure.
 
-
-
-
-
-
+### Parameter
+  -h, --help                   show this help message and exit
+  --folder_path FOLDER_PATH:   Path to data folder
+  --time_step TIME_STEP:       Time step between frames -> simulates operation speed of sensor
+  --mode MODE:                 "FPF" (Frame Per Frame) -> manual iteration (by pressing space) or "default" -> automatic iteration
+  --filter FILTER:             Option for selecting folder with filtered pointcloud
+Examples
 
 
 # Examples
