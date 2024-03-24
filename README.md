@@ -347,7 +347,10 @@ This is just a prototype, offering plenty of room for improvements and extension
 - Interactive UI for toggling components.
 - Better design
 - Expansion of supported classes (trams, buses, scooters, ...)
-- 
+- Solution to the problem of evaluation and training on the nuScenes dataset.
+- Combining preprocessing and training with parameters.
+- Proper conversion of nuScenes Ground-Truth data for visualization
+- many, many, many more :)
 
 # Credits
 - Thanks to [zhulf0804](https://github.com/zhulf0804/PointPillars) for his implementation of PointPillars.
