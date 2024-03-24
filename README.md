@@ -196,7 +196,7 @@ Once downloaded, the folder structure should be set up as follows:
 ## Preparing data for training: pre_process_kitti.py
 **Note:** The following scripts are from [zhulf0804](https://github.com/zhulf0804/PointPillars) who has implemented the PointPillars method in python with PyTorch. He used a different Numpy version than I did which might lead to issues. 
 To resolve this, you can either adjust the Numpy version and make the necessary modifications in the code, or create a new Conda environment based on the PointPillars implementation being used (recommended), which includes the appropriate dependencies for training.
-The script pre_process_kitti.py is responsible for creating an annotation database, which is used for comparison in the training process and for the creation of Train-Val-split. After this, the folder structure should look like:
+The script pre_process_kitti.py is responsible for creating an annotation database, which is used for comparison in the training process and for the creation of Train-Val-split. On my machine it takes about 5 minutes to preprocess the dataset. After this, the folder structure should look like:
 
 ```bash
 .
@@ -224,7 +224,7 @@ The script pre_process_kitti.py is responsible for creating an annotation databa
 ## Train a model: train.py
 **Note:** This script can be executed within the original environment.
 If you want to train a model on a dataset, then the script train.py comes into play. It handles the entire training process, generates the checkpoint file, and plots the results. The progress is displayed in the terminal using tqdm. It supports TensorBoard aswell.
-It is strongly recommended to use CUDA in order not to wait for ages. 
+It is strongly recommended to use CUDA in order not to wait for centuries. On my machine it takes about 10h to train a model with 160 epochs. 
 
 ### Parameters
 - `-h, --help`:                          Show this help message and exit.
@@ -242,6 +242,27 @@ It is strongly recommended to use CUDA in order not to wait for ages.
 ### Examples
 - `python train.py --data_root {absolute path to dataset root location}`
 - `python train.py --data_root {absolute path to dataset root location} --max_epoch=300`
+
+## Evaluate a model (KITTI Benchmark): evaluate.py
+This script handles the evaluation of a trained model on a specific dataset. As output, it generates the scores in the individual categories of the KITTI benchmark. It also calculates the average inference time in ms. 
+It is strongly recommended to use CUDA in order not to wait for ages. On my machine it takes about 3 minutes to evaluate a model. 
+
+### Parameters
+- `-h, --help`:                 Show this help message and exit.
+- `--data_root DATA_ROOT`:      Your data root for KITTI.
+- `--ckpt CKPT`:                Your checkpoint for KITTI.
+- `--saved_path SAVED_PATH`:    Your saved path for predicted results.
+- `--batch_size BATCH_SIZE`:    Batch size for processing -> default: 1.
+- `--num_workers NUM_WORKERS`:  Number of workers for data loading -> default: 4.
+- `--nclasses NCLASSES`:        Number of classes -> default: 3.
+- `--no_cuda`:                  Whether to use cuda.
+
+### Examples
+- `python evaluate.py --ckpt {absolute path to checkpoint root location} --data_root {absolute path to dataset root location}`
+
+# KITTIVIS_3D with nuScenes:
+In general, the tools are completely agnostic about the data source. Essentially, it is only relevant that the data is in the correct KITTI format at the time of processing. 
+For using KITTI scenes, the steps and instructions described above can be followed. If you want to use a different dataset like nuScenes or Waymo, it needs to be converted first. In this tool suite, a prototype procedure for using the nuScenes dataset is implemented. The following sections explain what can be done, how it's done, what cannot be done, and what problems still exist.
 
 
 # Open Issues
