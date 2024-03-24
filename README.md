@@ -75,7 +75,7 @@ This script simulates the provisioning of sensor data using a simple copy proced
 ### Exiting the script
 Once the script is terminated (with Ctrl + c), a clean-up procedure is initiated, which deletes all simulated data. However, this only occurs if the script is terminated properly. For instance, if the terminal is closed, the data will remain. However, running and terminating the script again will delete the data once more.
 
-#  Preparing data for visualization
+#  Preparing kitti data for visualization
 ## Data source
 KITTI raw data can be downloaded [here](https://www.cvlibs.net/datasets/kitti/raw_data.php). You have to create an account to access the files. 
 You should download the "synced+rectified data" (senor data), "calibration" (sensor calibration information) and "tracklets" (annotation for ground-truth) from here.
@@ -193,7 +193,7 @@ Once downloaded, the folder structure should be set up as follows:
             └── ...
 ```
 
-## Preparing data for training: pre_process_kitti.py
+## Preparing kitti data for training: pre_process_kitti.py
 **Note:** The following scripts are from [zhulf0804](https://github.com/zhulf0804/PointPillars) who has implemented the PointPillars method in python with PyTorch. He used a different Numpy version than I did which might lead to issues. 
 To resolve this, you can either adjust the Numpy version and make the necessary modifications in the code, or create a new Conda environment based on the PointPillars implementation being used (recommended), which includes the appropriate dependencies for training.
 The script pre_process_kitti.py is responsible for creating an annotation database, which is used for comparison in the training process and for the creation of Train-Val-split. On my machine it takes about 5 minutes to preprocess the dataset. After this, the folder structure should look like:
@@ -262,8 +262,9 @@ It is strongly recommended to use CUDA in order not to wait for ages. On my mach
 
 # KITTIVIS_3D with nuScenes:
 In general, the tools are completely agnostic about the data source. Essentially, it is only relevant that the data is in the correct KITTI format at the time of processing. 
-For using KITTI scenes, the steps and instructions described above can be followed. If you want to use a different dataset like nuScenes or Waymo, it needs to be converted first. In this tool suite, a prototype procedure for using the nuScenes dataset is implemented. The following sections explain what can be done, how it's done, what cannot be done, and what problems still exist.
+For using KITTI scenes, the steps and instructions described above can be followed. If you want to use a different dataset like nuScenes or Waymo, it needs to be converted first. In this tool suite, a prototype procedure for using the nuScenes dataset is implemented. The following sections explain what can be done, how it's done, what cannot be done, and what problems still exist. Short form: Visualization and object detection in visualization tool works (no GT-Data), training and evaluating a model does not work.
 
+## Preparing nuScenes data for visualization: nuscenes_kitti_converter.py
 
 # Open Issues
 
@@ -273,8 +274,21 @@ This is just a prototype, offering plenty of room for improvements and extension
 
 # Credits
 - Thanks to [zhulf0804](https://github.com/zhulf0804/PointPillars) for his implementation of PointPillars.
-- Thanks to []() for his nuScenes->Kitti converter. 
+- Thanks to [jbehley](https://gist.github.com/jbehley/1f2a68cba1b1914bb8b23f2de08fc233) for his nuScenes -> Kitti converter.
 
+# Citation
+@INPROCEEDINGS{Geiger2012CVPR,
+  author = {Andreas Geiger and Philip Lenz and Raquel Urtasun},
+  title = {Are we ready for Autonomous Driving? The KITTI Vision Benchmark Suite},
+  booktitle = {Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year = {2012}
+}
+@ARTICLE{Geiger2013IJRR,
+  author = {Andreas Geiger and Philip Lenz and Christoph Stiller and Raquel Urtasun},
+  title = {Vision meets Robotics: The KITTI Dataset},
+  journal = {International Journal of Robotics Research (IJRR)},
+  year = {2013}
+}
 # Contact Information
 
 Feel free to reach out to me:
