@@ -297,7 +297,6 @@ This script ([based on this](https://gist.github.com/jbehley/1f2a68cba1b1914bb8b
     ├── original_images_2.txt
     └── poses.txt
 ```
-
 ### Parameters
 This script does not use argparser. The usage works as follows: 
 - `python nuscenes_kitti_converter.py <dataset_folder> <output_folder> [<scene_name>]`
@@ -305,7 +304,21 @@ This script does not use argparser. The usage works as follows:
 ### Examples
 - `python nuscenes_kitti_converter.py {absolute path to nuscenes dataset split} "data/nuscenes"`
 
+## Approach for preparing nuScenes data for training and evaluating
+### 1. test_anns_converter
+For training and evaluating a model, the ground-truth data is relevant. The nuscenes-dev-kit provides a conversion script that claims to convert nuScenes data into the KITTI format. Unlike the previously described script, this one does not proceed scene by scene but converts the dataset into the training-testing structure of KITTI. Usage as follows:
+`python test_anns_converter.py nuscenes_gt_to_kitti <--params>`
+#### Parameters
 
+- <function>                           Function that should be uesed -> nuscenes_gt_to_kitti (for this purpose here).
+- `-h, --help`:                        Show this help message and exit.
+- `--nusc_kitti_dir=NUSC_KITTI_DIR`:   Path to the NuScenes-KITTI dataset directory.
+- `-c, --cam_name=CAM_NAME`:           Camera name -> default: 'CAM_FRONT'.
+- `-l, --lidar_name=LIDAR_NAME`:       LiDAR sensor name -> default: 'LIDAR_TOP'.
+- `-i, --image_count=IMAGE_COUNT`:     Number of images to process -> default: 10.
+- `--nusc_version=NUSC_VERSION`:       Version of the NuScenes dataset -> default: 'v1.0-test'.
+- `-s, --split=SPLIT`:                 Data split (e.g., 'test') -> default: 'test'.
+- `-d, --dataroot=DATAROOT`:           Path to the root directory of the data.
 
 
 
