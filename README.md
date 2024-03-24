@@ -6,7 +6,8 @@ This is a prototype for an interactive LiDAR visualization tool for primary KITT
 - Real time 3D object detection
 - Converter for nuScenes -> KITTI (only for visualization)
 - Environment for training and evaluating models
-  
+
+## Project Overview
 | Personal Rating | Year of Development | Languages | Tools | Type of Application |
 | --- | --- | --- | --- | --- |
 | ⭐️⭐️⭐️⭐️⭐️ (5/5) | 2024 | Python | OpenGL, PyGame, CUDA, PyTorch | Visualization |
@@ -92,7 +93,7 @@ The annotations of the ground-truth data are stored in a single large tracklets.
 ### Example
 - `python extract_per_frame_tracklets.py --n_frames 438 --xml_path "data/0091/tracklet_labels.xml" --output_dir "data/0091/tracklets"`
   
-## KITTI data format
+### KITTI data format
 After the extraction the folder structure should look similar to the following:
 ```bash
 .
@@ -122,6 +123,17 @@ After the extraction the folder structure should look similar to the following:
 ```
 Now you are ready to simulate!
 
+## Examples
+<img src="https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/3569caf6-600a-4f65-80fe-3c01fb8c5d47" alt="pc_vis1" width="200" height="200">
+
+<img src="https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/b56febc4-e161-4bb5-a341-25c6c07d4f1e" alt="gt_comp_mof" width="200" height="200">
+
+<img src="https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/fec8df81-9de1-49e3-a412-872863b5827b" alt="distances" width="200" height="200">
+
+<img src="https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/c7cb5e7f-72ae-4a9e-8493-4c4808d559e1" alt="mof_psf" width="200" height="200">
+
+<img src="https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/c8700dd5-6e82-4e7b-a0d0-3e830127613c" alt="no_reduced_passant" width="100" height="200">
+
 # Filtering pointclouds
 This project includes two methods for filtering point clouds. These methods allow for investigating how a model performs on reduced datasets.
 The first method systematically filters the point cloud by a certain factor, simulating a generally lower data availability typical of cheaper LiDAR sensors with lower resolution.
@@ -130,28 +142,32 @@ The second method reduces based on the layers or beams of the LiDAR scanner. In 
 ## Systematic filtering: pointcloud_filter_sys.py
 This script deletes all points except every x-th point from the point cloud. It stores the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
 
-## Parameters
+### Parameters
 - `-h, --help`:                    Show this help message and exit.
 - `--input_folder INPUT_FOLDER`:   Path to the input folder.
 - `--step STEP`:                   Filtering level (every x-th point will be retained) -> default: 2.
 - `--folder_name FOLDER_NAME`:     Name of the output folder (optional) -> default: "data_sys_reduced_{step}. If you change the folder_name, you have to reference this name in the filter-parameter from simulate_data.py.
 
-# Examples
+### Examples
 - `python pointcloud_filter_sys.py --input_folder "data\kitti\0051\velodyne_points\data" --step 3`
 - `python pointcloud_filter_sys.py --input_folder "data\kitti\0051\velodyne_points\data" --step 2 --folder_name "my_sys_filtered_pointcloud"`
+  
+![sys_reduced_passant](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/90149e14-0705-43d9-a499-69fa6812c231)
 
 ## Layer filtering: pointcloud_filter_layer.py
 This script deletes every x-th layer from the point cloud. It stores the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
 
-## Parameters
+### Parameters
 - `-h, --help`:                    Show this help message and exit.
 - `--input_folder INPUT_FOLDER`:   Path to the input folder.
 - `--step STEP`:                   Filtering level (every x-th layer will be deleted) -> default: 2.
 - `--folder_name FOLDER_NAME`:     Name of the output folder (optional) -> default: "data_sys_reduced_{step}. If you change the folder_name, you have to reference this name in the filter-parameter from simulate_data.py.
 
-# Examples
+### Examples
 - `python pointcloud_filter_layer.py --input_folder "data\kitti\0051\velodyne_points\data" --step 3`
 - `python pointcloud_filter_layer.py --input_folder "data\kitti\0051\velodyne_points\data" --step 2 --folder_name "my_layer_filtered_pointcloud"`
+  
+![layer_reduced_passant](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/1b782369-074b-43b0-a3fd-b350cd9ddc3f)
 
 # Train your own model
 ## Data source
@@ -265,6 +281,7 @@ In general, the tools are completely agnostic about the data source. Essentially
 For using KITTI scenes, the steps and instructions described above can be followed. If you want to use a different dataset like nuScenes or Waymo, it needs to be converted first. In this tool suite, a prototype procedure for using the nuScenes dataset is implemented. The following sections explain what can be done, how it's done, what cannot be done, and what problems still exist. Short form: Visualization and object detection in visualization tool works (no GT-Data), training and evaluating a model does not work.
 
 ## Preparing nuScenes data for visualization: nuscenes_kitti_converter.py
+This scripts converts 
 
 # Open Issues
 
