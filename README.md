@@ -120,12 +120,12 @@ Now you are ready to simulate!
 # Filtering pointclouds
 This project includes two methods for filtering point clouds. These methods allow for investigating how a model performs on reduced datasets.
 The first method systematically filters the point cloud by a certain factor, simulating a generally lower data availability typical of cheaper LiDAR sensors with lower resolution.
-The second method reduces based on the layers or beams of the LiDAR scanner. In this approach, every x-th layer is removed. This simulates a scanner that captures fewer layers (KITTI: 64 layers, nuScenes: 32 layers).
+The second method reduces based on the layers or beams of the LiDAR scanner. In this approach, every x-th layer is removed. This simulates a scanner that captures fewer layers (KITTI: 64 layers, nuScenes: 32 layers). Both scripts can be used in a similar way.
 
 ## Systematic filtering: pointcloud_filter_sys.py
-This script deletes all points except every x-th point from the point cloud. It saves the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
+This script deletes all points except every x-th point from the point cloud. It stores the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
 
-##Parameter
+## Parameter
 - `-h, --help`:                    Show this help message and exit.
 - `--input_folder INPUT_FOLDER`:   Path to the input folder.
 - `--step STEP`:                   Filtering level (every x-th point will be retained) -> default: 2.
@@ -133,10 +133,65 @@ This script deletes all points except every x-th point from the point cloud. It 
 
 # Examples
 - `python pointcloud_filter_sys.py --input_folder "data\kitti\0051\velodyne_points\data" --step 3`
-- 
+- `python pointcloud_filter_sys.py --input_folder "data\kitti\0051\velodyne_points\data" --step 2 --folder_name "my_sys_filtered_pointcloud"`
+
+## Layer filtering: pointcloud_filter_layer.py
+This script deletes every x-th layer from the point cloud. It stores the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
+
+## Parameter
+- `-h, --help`:                    Show this help message and exit.
+- `--input_folder INPUT_FOLDER`:   Path to the input folder.
+- `--step STEP`:                   Filtering level (every x-th layer will be deleted) -> default: 2.
+- `--folder_name FOLDER_NAME`:     Name of the output folder (optional) -> default: "data_sys_reduced_{step}. If you change the folder_name, you have to reference this name in the filter-parameter from simulate_data.py.
+
+# Examples
+- `python pointcloud_filter_layer.py --input_folder "data\kitti\0051\velodyne_points\data" --step 3`
+- `python pointcloud_filter_layer.py --input_folder "data\kitti\0051\velodyne_points\data" --step 2 --folder_name "my_layer_filtered_pointcloud"`
+
+# Train your own model
+## Data source
+The training data can be downloaded [here](https://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d) from the official KITTI Vision Benchmark Suite. Be sure to create an account first to access the files.
+Once downloaded, the folder structure should be set up as follows:
+
+```bash
+.
+└── data/kitti/
+    ├── training/
+    │   ├── image_02/
+    │   │   ├── [x.png]
+    │   │   └── ...
+    │   ├── image_03/
+    │   │   ├── [x.png]
+    │   │   └── ...
+    │   ├── velodyne_points/
+    │   │   ├── [x.bin]
+    │   │   └── ...
+    │   ├── calib/
+    │   │   ├── [x.txt]
+    │   │   └── ...
+    │   └── label_2/
+    │       ├── [x.txt]
+    │       └── ...
+    └── testing/
+        ├── image_02/
+        │   ├── [x.png]
+        │   └── ...
+        ├── image_03/
+        │   ├── [x.png]
+        │   └── ...
+        ├── velodyne_points/
+        │   ├── [x.bin]
+        │   └── ...
+        └── calib/
+            ├── [x.txt]
+            └── ...
+```
 
 # Open Issues
-here nuScenes issue
+
+This is just a prototype, offering plenty of room for improvements and extensions. Some possible enhancements could include: 
+- 
+- 
 
 # Credits
 - Thanks to [zhulf0804](https://github.com/zhulf0804/PointPillars) for his implementation of PointPillars.
