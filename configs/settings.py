@@ -27,8 +27,8 @@ colors_gt = {
 #Treshhold for rendering prediction
 min_tresh = 0.5
 
-#0000000000
-#000000
+#0000000000 (scenes)
+#000000     (training data)
 
 #Startframe notation
 start_frame = "0000000000"
