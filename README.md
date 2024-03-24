@@ -9,7 +9,7 @@ This is a prototype for an interactive LiDAR visualization tool for primary KITT
   
 | Personal Rating | Year of Development | Languages | Tools | Type of Application |
 | --- | --- | --- | --- | --- |
-| ⭐️⭐️⭐️⭐️⭐️ (5/5) | 2024 | Python | OpenGL, PyGame, CUDA, PyTorch | Visualisierung |
+| ⭐️⭐️⭐️⭐️⭐️ (5/5) | 2024 | Python | OpenGL, PyGame, CUDA, PyTorch | Visualization |
 
 # Getting Started 
 ## Prerequisites
@@ -70,7 +70,7 @@ This script simulates the provisioning of sensor data using a simple copy proced
 ### Exiting the script
 Once the script is terminated (with Ctrl + c), a clean-up procedure is initiated, which deletes all simulated data. However, this only occurs if the script is terminated properly. For instance, if the terminal is closed, the data will remain. However, running and terminating the script again will delete the data once more.
 
-# Preparing data for visualization
+#  Preparing data for visualization
 ## Data source
 KITTI raw data can be downloaded [here](https://www.cvlibs.net/datasets/kitti/raw_data.php). You have to create an account to access the files. 
 You should download the "synced+rectified data" (senor data), "calibration" (sensor calibration information) and "tracklets" (annotation for ground-truth) from here.
@@ -89,6 +89,7 @@ The annotations of the ground-truth data are stored in a single large tracklets.
   
 ## KITTI data format
 After the extraction the folder structure should look similar to the following:
+```bash
 .
 └── data/kitti/<scene>/
     ├── image_00/
@@ -113,15 +114,26 @@ After the extraction the folder structure should look similar to the following:
     │   ├── [x.bin]
     │   └── ...
     └── <meta_data>.txt
+```
+Now you are ready to simulate!
 
-    
+# Filtering pointclouds
+This project includes two methods for filtering point clouds. These methods allow for investigating how a model performs on reduced datasets.
+The first method systematically filters the point cloud by a certain factor, simulating a generally lower data availability typical of cheaper LiDAR sensors with lower resolution.
+The second method reduces based on the layers or beams of the LiDAR scanner. In this approach, every x-th layer is removed. This simulates a scanner that captures fewer layers (KITTI: 64 layers, nuScenes: 32 layers).
 
+## Systematic filtering: pointcloud_filter_sys.py
+This script deletes all points except every x-th point from the point cloud. It saves the folder with the filtered pointcloud in the same directory as the source folder (for easy access via simulate_data.py).
 
-
-
-
+##Parameter
+- `-h, --help`:                    Show this help message and exit.
+- `--input_folder INPUT_FOLDER`:   Path to the input folder.
+- `--step STEP`:                   Filtering level (every x-th point will be retained) -> default: 2.
+- `--folder_name FOLDER_NAME`:     Name of the output folder (optional) -> default: "data_sys_reduced_{step}. If you change the folder_name, you have to reference this name in the filter-parameter from simulate_data.py.
 
 # Examples
+- `python pointcloud_filter_sys.py --input_folder "data\kitti\0051\velodyne_points\data" --step 3`
+- 
 
 # Open Issues
 here nuScenes issue
