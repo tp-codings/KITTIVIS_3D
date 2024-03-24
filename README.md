@@ -150,7 +150,8 @@ This script deletes every x-th layer from the point cloud. It stores the folder 
 
 # Train your own model
 ## Data source
-The training data can be downloaded [here](https://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d) from the official KITTI Vision Benchmark Suite. Be sure to create an account first to access the files.
+The training data can be downloaded [here](https://www.cvlibs.net/datasets/kitti/eval_object.php?obj_benchmark=3d) from the official KITTI Vision Benchmark Suite. Be sure to create an account first to access the files. 
+If you like to train on a filtered dataset, eel free to apply the corresponding script to the point cloud folders for training and testing.
 Once downloaded, the folder structure should be set up as follows:
 
 ```bash
@@ -190,12 +191,32 @@ Once downloaded, the folder structure should be set up as follows:
 ## Preparing data for training: pre_process_kitti.py
 **Note:** The following scripts are from [zhulf0804](https://github.com/zhulf0804/PointPillars) who has implemented the PointPillars method in python with PyTorch. He used a different Numpy version than I did which might lead to issues. 
 To resolve this, you can either adjust the Numpy version and make the necessary modifications in the code, or create a new Conda environment based on the PointPillars implementation being used (recommended), which includes the appropriate dependencies for training.
-The script pre_process_kitti.py is responsible for creating an annotation database, which is used for comparison in the training process and for the creation of Train-Val-split.
+The script pre_process_kitti.py is responsible for creating an annotation database, which is used for comparison in the training process and for the creation of Train-Val-split. After this, the folder structure should look like:
+
+```bash
+.
+└── data/kitti/
+    ├── kitti_gt_database/
+    │   ├── <frame>_<class>_<count>.bin
+    │   └── ...
+    ├── training/
+    ├── testing/
+    ├── kitti_dbinfos_train.pkl
+    ├── kitti_infos_test.pkl
+    ├── kitti_infos_train.pkl
+    ├── kitti_infos_trainval.pkl
+    └── kitti_infos_val.pkl
+```
 
 ### Parameters
-- `-h, --help`: Show this help message and exit.
-- `--data_root DATA_ROOT`: Your data root for KITTI.
-- `--prefix PREFIX`: The prefix name for the saved .pkl file.
+- `-h, --help`:             Show this help message and exit.
+- `--data_root DATA_ROOT`:  Your data root for KITTI.
+- `--prefix PREFIX`:        The prefix name for the saved .pkl file.
+
+### Examples
+- `python pre_process_kitti.py --data_root {absolute path to dataset root location}`
+
+## Train a model: train.py
 
 
 # Open Issues
