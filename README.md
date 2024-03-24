@@ -281,7 +281,7 @@ In general, the tools are completely agnostic about the data source. Essentially
 For using KITTI scenes, the steps and instructions described above can be followed. If you want to use a different dataset like nuScenes or Waymo, it needs to be converted first. In this tool suite, a prototype procedure for using the nuScenes dataset is implemented. The following sections explain what can be done, how it's done, what cannot be done, and what problems still exist. Short form: Visualization and object detection in visualization tool works (no GT-Data), training and evaluating a model does not work.
 
 ## Preparing nuScenes data for visualization: nuscenes_kitti_converter.py
-This script ([based on this](https://gist.github.com/jbehley/1f2a68cba1b1914bb8b23f2de08fc233)) extracts all scenes from the entire referenced dataset split and converts the associated data scene by scene into the KITTI format. It only supports the conversion of camera images and LiDAR data. The script cannot convert the ground-truth data, which is why they cannot be visualized. The folder structure looks as follows:
+This script ([based on this](https://gist.github.com/jbehley/1f2a68cba1b1914bb8b23f2de08fc233)) extracts all scenes from the entire referenced dataset split and converts the associated data scene by scene into the KITTI format. It only supports the conversion of camera images and LiDAR data. The script cannot convert the ground-truth data, which is why they cannot be visualized. It has been modified to also format the LiDAR data. nuScenes LiDAR data contains a ring index, which is not provided for in the KITTI format and thus needs to be removed. The folder structure looks as follows:
 
 ```bash
 .
@@ -303,6 +303,8 @@ This script does not use argparser. The usage works as follows:
 
 ### Examples
 - `python nuscenes_kitti_converter.py {absolute path to nuscenes dataset split} "data/nuscenes"`
+  
+![mof_nuscenes](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/a2a569eb-aca9-44bc-9aa2-24aeb6eb311a)
 
 ## Approach for preparing nuScenes data for training and evaluating
 ### 1. Convert dataset: test_anns_converter.py
@@ -330,14 +332,21 @@ The script test_anns_converter.py does not index the files correctly but names t
 The converter script also does not convert the ground truth data properly. It includes classes, that are supported by nuScenes but not by KITTI. The script convert_ns_gt_to_kitti_gt.py is responsible for the conversion to the KITTI format by deleting all not supported classes. The path to the "label_2"-folder is also hardcoded. 
 
 ### 4. Remove last entry: remove_last_entry.py
-For whatever reason there is an additional entry inside the GT-data, which has to be removed. For sure, you could do this inside convert_ns_gt_to_kitti_gt.py but I did not for testing purposes. 
+For whatever reason there is an additional entry inside the GT-data, which has to be removed. For sure, you could do this inside convert_ns_gt_to_kitti_gt.py but I did not because of testing purposes. This script uses the same hardcoded path.
 
-
+### Conclusion
+At this point, the dataset appears to be correctly converted into the KITTI format. All files are referenced by indices, the ground-truth data corresponds to the KITTI format, the ring indizes from the LiDAR-data are removed and the folder structure also matches.
+The procedure now follows the same as the one for KITTI-data because once converted to the KITTI format, the original origin of the data should not matter, as it can no longer be resolved. 
+The preprocessing of the data works just fine. However, during evaluation on this dataset, index errors are being thrown, the origin of which I have not been able to identify:
+![Untitled](https://github.com/tp-codings/KITTIVIS_3D/assets/118997294/db60040f-5c17-4f8c-8a78-0c90ddd3a818)
+It was also peculiar that this error occurred at different points in the evaluation process and that some data passed through without a problem. Maybe someone smarter than me is able to solve this issue.
 
 # Open Issues
-
 This is just a prototype, offering plenty of room for improvements and extensions. Some possible enhancements could include: 
-- 
+- Another system for assignment control and synchronization of individual frames as indices, onsidering the lack of guaranteed synchronization of an on-board system.
+- Interactive UI for toggling components.
+- Better design
+- Expansion of supported classes (trams, buses, scooters, ...)
 - 
 
 # Credits
