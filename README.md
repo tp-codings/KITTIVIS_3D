@@ -217,6 +217,21 @@ The script pre_process_kitti.py is responsible for creating an annotation databa
 - `python pre_process_kitti.py --data_root {absolute path to dataset root location}`
 
 ## Train a model: train.py
+**Note:** This script can be executed within the original environment.
+If you want to train a model on a dataset, then the script train.py comes into play. It handles the entire training process, generates the checkpoint file, and plots the results. The progress is displayed in the terminal using tqdm. It supports TensorBoard aswell.
+
+### Parameters:
+- `-h, --help`:                          Show this help message and exit.
+- `--data_root DATA_ROOT`:               Your data root for KITTI.
+- `--saved_path SAVED_PATH`:             Path to save the output.
+- `--batch_size BATCH_SIZE`:             Batch size for training.
+- `--num_workers NUM_WORKERS`:           Number of workers for data loading.
+- `--nclasses NCLASSES`:                 Number of classes.
+- `--init_lr INIT_LR`:                   Initial learning rate.
+- `--max_epoch MAX_EPOCH`:               Maximum number of epochs for training.
+- `--log_freq LOG_FREQ`:                 Logging frequency.
+- `--ckpt_freq_epoch CKPT_FREQ_EPOCH`:   Checkpoint saving frequency (in epochs).
+- `--no_cuda`:                           Whether to use cuda.
 
 
 # Open Issues
